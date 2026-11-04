@@ -1,4 +1,4 @@
-"""The configuration of the shipped model (chosen by experiments — see ADR-007).
+"""The configuration of the shipped model (chosen by experiments E4 — see ADR-007, EXP-004).
 
 Change this only together with a new experiments run and an ADR update: the report, the
 committed ``models/model.pkl`` and this file must agree.
@@ -11,7 +11,7 @@ from nnp.models.pipeline import PipelineConfig
 
 FINAL_CONFIG = PipelineConfig(
     scaling="zscore",
-    clip=8.0,
+    clip=3.0,
     adapt=True,
     selection=SelectionConfig(method="anova", threshold=100.0),
     model="svc_rbf",

@@ -10,7 +10,7 @@ A Device_B-trained pipeline with a global scaler scores ≈ 55–65 % on validat
 
 ## Decision
 1. **Policy (user, S001):** `infer.py` may use the **unlabeled** features of the whole test folder (transductive adaptation). No labels, no information beyond the files given.
-2. **Method:** standardize each *device* with its own statistics (mean/std on the selected features), both at training (per device folder) and at test time (per *discovered* device). Clip standardized values to ±8 (outlier control).
+2. **Method:** standardize each *device* with its own statistics (mean/std on the selected features), both at training (per device folder) and at test time (per *discovered* device). Clip standardized values to ±3 (outlier control; value tuned in E4, ADR-007).
 3. **Device discovery:** k-means (k = 1…4) on a 2-D PCA of **probe features** — the 25 % of features with the lowest training ANOVA F-score, i.e. activity-independent — robust-z-scored with training stats. Accept a split only if silhouette ≥ 0.8 **and** every cluster ≥ max(30, 5 % of N). Otherwise one device. Tiny clusters (< 30) fall back to training reference statistics.
 4. **Timing (user, S001):** the one-off adaptation (clustering + statistics + one warm-up prediction) is timed and **amortized**: each `time.txt` line = that sample's own preprocess+predict time + adaptation time / N. Disk I/O stays untimed, as the brief specifies.
 
@@ -25,6 +25,7 @@ A Device_B-trained pipeline with a global scaler scores ≈ 55–65 % on validat
 | Add adaptation time to line 1 only | Honest but produces one outlier line; amortization states the same total |
 
 ## Consequences
-- Accuracy ≈ 96.7 % validation vs ≈ 55 % without (EXP-003).
+- Accuracy ≈ 97.3 % validation vs ≈ 55 % without (EXP-003, ADR-007).
+- Per-device statistics are sensitive to outlier *records* (they contaminate mean/std): handled by clipping at ±3 (tuned in E4); robust median/IQR statistics are the fallback option if a device shows many outliers (EXP-005).
 - Assumes similar class mixes per device; documented as a limitation.
 - Behaviour with < 60 test files: one device, possibly reference stats → reduced accuracy on a shifted phone (documented in the report and the HF app).

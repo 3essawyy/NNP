@@ -79,6 +79,7 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
         "discovered on the validation set; variants without adaptation treat the set as one "
         "domain (--).",
         "tab:ablation",
+        wide=True,
     )
     fig, ax = figure(6.2, 3.0)
     ys = np.arange(len(rows))[::-1]

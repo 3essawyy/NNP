@@ -121,6 +121,7 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
         f" clip $\\pm{FINAL_CONFIG.clip:g}$). Accuracy in \\%; {k}-fold CV on Device\\_B; "
         "validation = released eval\\_data (never trained on).",
         "tab:compare",
+        wide=True,
     )
 
     fig, ax = figure(6.4, 3.6)

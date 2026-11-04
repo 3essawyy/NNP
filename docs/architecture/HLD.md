@@ -17,9 +17,9 @@ The design goal is therefore *transfer*, not in-domain accuracy: every choice is
 flowchart LR
   subgraph Train["Training (labelled source devices) — nnp.models.train"]
     D1["Device_* folders"] --> S1["per-device<br/>standardize (own stats)"]
-    S1 --> C1["clip ±8σ"]
+    S1 --> C1["clip ±3σ"]
     C1 --> F1["ANOVA-F selection<br/>(fit on train)"]
-    F1 --> M1["RBF SVM<br/>(C=10, γ=scale)"]
+    F1 --> M1["RBF SVM<br/>(C=100, γ=scale)"]
     D1 --> P1["DeviceClusterer.fit<br/>(probe features = lowest F)"]
   end
   subgraph Infer["Inference (unlabeled test folder) — infer.py"]
@@ -69,7 +69,7 @@ flowchart LR
 | Item | Value (validation set, this container: 4 vCPU, 15 GB RAM) |
 |---|---|
 | Training time | ≈ 2 s |
-| Model size | ≈ 3.4 MB |
+| Model size | ≈ 2.8 MB (315 features, ~1100 support vectors) |
 | One-off adaptation (3090 samples) | ≈ 0.2–0.4 s, amortized (≈ 0.1 ms/sample) |
 | Per-sample time charged in `time.txt` | ≈ 0.4–0.5 ms mean |
 | Docker image | `python:3.12-slim` + numpy/pandas/scipy/scikit-learn ≈ 650 MB; runs with `--network none` |

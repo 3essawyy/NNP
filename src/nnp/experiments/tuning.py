@@ -1,8 +1,9 @@
 """E4 — hyperparameter tuning of the shipped family (report §Tuning).
 
 Grid: SVM ``C`` × ANOVA F-threshold (``γ = "scale"``), then ``γ`` multipliers at the best
-cell. Selection rule (ADR-005/007): highest validation accuracy; ties within 0.2 pp are
-broken by simulated-shift CV, then by the simpler model (smaller C, fewer features).
+cell, then outlier clip × scaling (z-score vs robust) at the chosen C/F.
+Selection rule (ADR-005/007): highest validation accuracy; ties within 0.2 pp are broken by
+simulated-shift CV, then by the simpler model (smaller C, fewer features).
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from nnp.experiments.common import (
     Data,
     figure,
     latex_macros,
+    latex_table,
     pct,
     save_figure,
     save_json,
@@ -29,6 +31,8 @@ from nnp.models.final import FINAL_CONFIG
 C_GRID = (1.0, 3.0, 10.0, 30.0, 100.0)
 F_GRID = (10.0, 25.0, 50.0, 100.0, 200.0, 400.0)
 GAMMA_MULT = (0.25, 0.5, 1.0, 2.0, 4.0)
+CLIP_GRID = (2.0, 3.0, 4.0, 5.0, 8.0)
+SCALINGS = ("zscore", "robust")
 
 
 def run(data: Data, quick: bool = False) -> dict[str, Any]:
@@ -76,6 +80,54 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
         gammas.append({"gamma_mult": g, "gamma": base_gamma * g, "validation": val.accuracy})
         print(f"  gamma x{g:<5g} val {val.accuracy:.4f}")
 
+    # clip x scaling sweep at the chosen C / F (added in S002 after E5 showed outlier fragility)
+    clips: list[dict[str, Any]] = []
+    for scaling in SCALINGS:
+        for clip in CLIP_GRID:
+            cfg = dataclasses.replace(
+                FINAL_CONFIG,
+                scaling=scaling,  # type: ignore[arg-type]
+                clip=clip,
+                selection=SelectionConfig("anova", threshold=chosen["f_threshold"]),
+                model_params={"C": chosen["C"], "gamma": "scale"},
+            )
+            val = validate(cfg, tr.X, tr.y, tr.devices, data.X_val, data.y_val)
+            sh = shifted_cv(cfg, tr.X, tr.y, tr.devices, SIM_SHIFT, k=k).mean
+            clips.append(
+                {"scaling": scaling, "clip": clip, "validation": val.accuracy, "shifted_cv": sh}
+            )
+            print(f"  {scaling:7s} clip {clip:<4g} val {val.accuracy:.4f}  shifted {sh:.4f}")
+    best_clip_val = max(c["validation"] for c in clips)
+    near_clip = [c for c in clips if c["validation"] >= best_clip_val - 0.002]
+    near_clip.sort(key=lambda c: (-c["shifted_cv"], -c["clip"]))
+    chosen_clip = near_clip[0]
+
+    latex_table(
+        "clip",
+        ["Clip", *[f"{s} val." for s in SCALINGS], *[f"{s} sim.-shift" for s in SCALINGS]],
+        [
+            [
+                f"$\\pm{c:g}$",
+                *(
+                    pct(
+                        next(x["validation"] for x in clips if x["clip"] == c and x["scaling"] == s)
+                    )
+                    for s in SCALINGS
+                ),
+                *(
+                    pct(
+                        next(x["shifted_cv"] for x in clips if x["clip"] == c and x["scaling"] == s)
+                    )
+                    for s in SCALINGS
+                ),
+            ]
+            for c in CLIP_GRID
+        ],
+        f"Outlier clipping and scaling at $C={chosen['C']:g}$, $F>{chosen['f_threshold']:g}$ "
+        "(accuracy \\%).",
+        "tab:clip",
+    )
+
     save_json(
         "tuning",
         {
@@ -84,6 +136,8 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
             "cells": cells,
             "chosen": chosen,
             "gamma_sweep": gammas,
+            "clip_sweep": clips,
+            "chosen_clip": chosen_clip,
             "rule": "max validation; ties (<=0.2pp) -> max simulated-shift CV -> smaller C -> "
             "higher F threshold",
         },
@@ -118,6 +172,8 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
             "TunedVal": pct(chosen["validation"]),
             "GridMin": pct(float(grid.min())),
             "GridMax": pct(float(grid.max())),
+            "TunedClip": f"{chosen_clip['clip']:g}",
+            "TunedScaling": str(chosen_clip["scaling"]),
         }
     )
     return {"chosen": chosen}

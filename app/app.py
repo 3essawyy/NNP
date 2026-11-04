@@ -52,6 +52,7 @@ def predict_files(files: list[Any] | None) -> tuple[list[list[Any]], str]:
     Xa = np.vstack(X)
     t0 = time.perf_counter()
     adaptation = PIPELINE.adapt(Xa)
+    PIPELINE.predict_one(Xa[0], adaptation)  # warm-up (builds the fast path), charged below
     adapt_s = time.perf_counter() - t0
     for p, x in zip(ok, Xa, strict=True):
         t = time.perf_counter()

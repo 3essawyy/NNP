@@ -2,21 +2,21 @@
 \begin{table}[t]
 \centering
 \small
-\caption{Ablation with the shipped RBF SVM (accuracy \%). Devices are the ones discovered on the validation set; without adaptation there is one domain, so the per-device columns repeat the split found by the shipped pipeline only when adaptation is on.}
+\caption{Ablation with the shipped RBF SVM (accuracy \%). Per-device columns use the devices discovered on the validation set; variants without adaptation treat the set as one domain (--).}
 \label{tab:ablation}
 \begin{tabular}{lrrrr}
 \toprule
 Variant & Val. dev.\,0 & Val. dev.\,1 & Val. overall & Sim.-shift CV \\
 \midrule
-Shipped pipeline & 96.4 & 97.0 & 96.7 & 95.6 \\
-No per-device adaptation (global scaler) & 55.4 & nan & 55.4 & 13.7 \\
+Shipped pipeline & 97.0 & 97.1 & 97.1 & 94.7 \\
+No per-device adaptation (global scaler) & -- & -- & 55.4 & 13.7 \\
 No feature selection (all 561) & 36.5 & 33.6 & 35.0 & 97.3 \\
-No adaptation and no selection & 28.0 & nan & 28.0 & 19.7 \\
-No outlier clipping & 96.1 & 96.8 & 96.4 & 95.3 \\
-Robust scaling (median/IQR) & 96.6 & 96.6 & 96.6 & 95.4 \\
-Mutual-information top-336 & 75.1 & 73.8 & 74.4 & 95.4 \\
-+ PCA (95\% variance) & 95.4 & 95.1 & 95.3 & 94.5 \\
-+ LDA projection (5-D) & 74.4 & 92.8 & 83.6 & 18.6 \\
+No adaptation and no selection & -- & -- & 28.0 & 19.7 \\
+No outlier clipping & 97.0 & 96.8 & 96.9 & 94.4 \\
+Robust scaling (median/IQR) & 96.6 & 96.6 & 96.6 & 95.1 \\
+Mutual-information top-313 & 83.6 & 81.9 & 82.8 & 94.9 \\
++ PCA (95\% variance) & 95.3 & 95.6 & 95.4 & 93.1 \\
++ LDA projection (5-D) & 75.1 & 91.2 & 83.2 & 18.2 \\
 \bottomrule
 \end{tabular}
 \end{table}
