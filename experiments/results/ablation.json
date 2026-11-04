@@ -1,0 +1,92 @@
+{
+  "variants": [
+    {
+      "variant": "Shipped pipeline",
+      "validation": 0.9731391585760518,
+      "validation_per_device": [
+        0.972168284789644,
+        0.9741100323624595
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.9564328093697025
+    },
+    {
+      "variant": "No per-device adaptation (global scaler)",
+      "validation": 0.7592233009708738,
+      "validation_per_device": [
+        0.7592233009708738
+      ],
+      "n_devices": 1,
+      "shifted_cv": 0.18422638310987824
+    },
+    {
+      "variant": "No feature selection (all 561)",
+      "validation": 0.30097087378640774,
+      "validation_per_device": [
+        0.31132686084142397,
+        0.2906148867313916
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.9822411003236245
+    },
+    {
+      "variant": "No adaptation and no selection",
+      "validation": 0.24692556634304208,
+      "validation_per_device": [
+        0.24692556634304208
+      ],
+      "n_devices": 1,
+      "shifted_cv": 0.1967259978425027
+    },
+    {
+      "variant": "No outlier clipping",
+      "validation": 0.9686084142394822,
+      "validation_per_device": [
+        0.96957928802589,
+        0.9676375404530745
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.9442240715056249
+    },
+    {
+      "variant": "Robust scaling (median/IQR)",
+      "validation": 0.9666666666666667,
+      "validation_per_device": [
+        0.9624595469255663,
+        0.970873786407767
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.9536604253351826
+    },
+    {
+      "variant": "Mutual-information top-315",
+      "validation": 0.8103559870550162,
+      "validation_per_device": [
+        0.8142394822006472,
+        0.8064724919093851
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.9622646016335337
+    },
+    {
+      "variant": "+ PCA (95\\% variance)",
+      "validation": 0.9559870550161812,
+      "validation_per_device": [
+        0.9514563106796117,
+        0.9605177993527508
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.9381229773462783
+    },
+    {
+      "variant": "+ LDA projection (5-D)",
+      "validation": 0.9588996763754045,
+      "validation_per_device": [
+        0.9559870550161812,
+        0.9618122977346278
+      ],
+      "n_devices": 2,
+      "shifted_cv": 0.5815795962397904
+    }
+  ]
+}

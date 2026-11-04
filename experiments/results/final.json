@@ -1,0 +1,185 @@
+{
+  "model_meta": {
+    "nnp_version": "0.1.0",
+    "sklearn_version": "1.9.1",
+    "numpy_version": "2.5.4",
+    "python": "3.12.13",
+    "created_utc": "2026-11-04T20:42:35Z",
+    "n_train": 3604,
+    "n_selected_features": 315,
+    "config": {
+      "scaling": "zscore",
+      "clip": 3.0,
+      "adapt": true,
+      "selection": {
+        "method": "anova",
+        "threshold": 100.0,
+        "k": null,
+        "min_variance": 1e-08,
+        "seed": 0
+      },
+      "reduction": {
+        "method": "none",
+        "n_components": null,
+        "seed": 0
+      },
+      "model": "svc_rbf",
+      "model_params": {
+        "C": 100.0,
+        "gamma": "scale"
+      },
+      "cluster": {
+        "probe_quantile": 0.25,
+        "n_components": 2,
+        "k_max": 4,
+        "min_silhouette": 0.8,
+        "min_fraction": 0.05,
+        "min_size": 30,
+        "silhouette_sample": 2000,
+        "seed": 0
+      },
+      "seed": 0
+    },
+    "train_seconds": 1.24
+  },
+  "accuracy": 0.9731391585760518,
+  "macro_f1": 0.9741877118064427,
+  "per_device_accuracy": [
+    0.972168284789644,
+    0.9741100323624595
+  ],
+  "per_class": [
+    {
+      "label": 0,
+      "name": "Walking",
+      "precision": 0.9923954372623575,
+      "recall": 0.9923954372623575,
+      "f1": 0.9923954372623575,
+      "support": 526
+    },
+    {
+      "label": 1,
+      "name": "Walking Upstairs",
+      "precision": 0.9958246346555324,
+      "recall": 0.9896265560165975,
+      "f1": 0.9927159209157128,
+      "support": 482
+    },
+    {
+      "label": 2,
+      "name": "Walking Downstairs",
+      "precision": 0.9876543209876543,
+      "recall": 0.9950248756218906,
+      "f1": 0.9913258983890955,
+      "support": 402
+    },
+    {
+      "label": 3,
+      "name": "Sitting",
+      "precision": 0.9190207156308852,
+      "recall": 0.9439071566731141,
+      "f1": 0.9312977099236641,
+      "support": 517
+    },
+    {
+      "label": 4,
+      "name": "Standing",
+      "precision": 0.948943661971831,
+      "recall": 0.9261168384879725,
+      "f1": 0.9373913043478261,
+      "support": 582
+    },
+    {
+      "label": 5,
+      "name": "Laying",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 581
+    }
+  ],
+  "confusion": [
+    [
+      522,
+      2,
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      477,
+      3,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      0,
+      400,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      488,
+      29,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      43,
+      539,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      581
+    ]
+  ],
+  "top_confusions": [
+    [
+      "Standing",
+      "Sitting",
+      43
+    ],
+    [
+      "Sitting",
+      "Standing",
+      29
+    ],
+    [
+      "Walking Upstairs",
+      "Walking Downstairs",
+      3
+    ],
+    [
+      "Walking",
+      "Walking Upstairs",
+      2
+    ],
+    [
+      "Walking",
+      "Walking Downstairs",
+      2
+    ]
+  ],
+  "adapt_seconds": 0.27615053499994247,
+  "time_mean_ms": 0.48668424757848794,
+  "time_p95_ms": 0.6212284049589649,
+  "time_max_ms": 4.758758105078522,
+  "time_total_s": 1.5038543250175278,
+  "time_rounded_total_s": 1.246,
+  "n_devices": 2
+}

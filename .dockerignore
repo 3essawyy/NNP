@@ -1,0 +1,7 @@
+*
+!requirements.txt
+!infer.py
+!src/
+!models/model.pkl
+**/__pycache__
+src/nnp/experiments

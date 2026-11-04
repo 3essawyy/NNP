@@ -1,0 +1,30 @@
+\section{Introduction}
+Human activity recognition (HAR) from smartphone inertial sensors is a standard pattern
+recognition task: accelerometer and gyroscope windows are summarized into hand-crafted
+time- and frequency-domain features and classified into activities~\cite{anguita2013}. In
+deployment, however, the phone that produced the training data is rarely the phone that is
+used. Phones differ in sensor bias, sensitivity and noise, and models trained on one device
+degrade on others~\cite{stisen2015}. In the dataset-shift vocabulary this is a covariate
+shift between a source and a target domain~\cite{quinonero2009,moreno2012}; theory bounds
+the target error by the source error plus a divergence between the domains~\cite{bendavid2010},
+so reducing that divergence matters as much as a strong classifier.
+
+\textbf{Problem.} Given records of 561 features from Device\_B (\NTrain{} labelled records),
+predict the activity of records from unseen devices. The validation set (\NVal{} records)
+turned out to contain two devices; the hidden test set may contain others.
+
+\textbf{Related work.} Domain generalization (DG) learns from source domains only, while
+domain adaptation also uses unlabeled target data~\cite{zhou2022dg,wang2022dg}. A simple and
+effective family re-estimates normalization statistics on the target domain:
+AdaBN~\cite{li2017adabn} recomputes batch-normalization statistics per domain, and
+CORAL~\cite{sun2016coral} aligns second-order statistics. Per-device calibration and
+normalization is also the first mitigation proposed for sensing heterogeneity
+in~\cite{stisen2015}. Deep models dominate HAR on raw signals~\cite{wang2019deep}, but on
+hand-crafted feature vectors kernel and linear models remain competitive~\cite{anguita2013}.
+% TODO(team, T-014): verify every citation; add 2-4 HAR domain-adaptation papers you read.
+
+\textbf{Contributions.} (i) A diagnosis of the released data: per-feature affine device shift,
+two devices in the validation set, and a noise-dominated feature block. (ii) An unsupervised
+device-discovery step on activity-independent probe features that enables per-device
+standardization at test time. (iii) A complete, tested, sub-millisecond pipeline with an
+honest timing protocol, evaluated by in-domain CV, simulated-shift CV and validation.

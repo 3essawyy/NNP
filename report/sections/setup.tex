@@ -1,0 +1,36 @@
+\section{Experimental Setup}
+\label{sec:setup}
+
+\textbf{Data usage.} Training uses the Device\_B folder only. The labels of the released
+validation set are used for model selection and hyperparameter tuning, never for fitting.
+Because they guide selection, the validation score is mildly optimistic; we therefore also
+report two estimates that do not touch validation labels.
+
+\textbf{Three estimates.}
+(1)~\emph{In-domain CV}: stratified 5-fold CV on Device\_B (upper bound, no shift).
+(2)~\emph{Simulated-shift CV}: same folds, but each held-out fold is turned into a synthetic new
+phone before prediction: offsets of $\mathcal{N}(0,3\sigma_j)$ on a random half of the
+features, log-normal gains ($\sigma=0.2$), per-record heteroscedastic noise ($0.1\sigma_j$ scaled
+by $U(0.5,1.5)$) and 1\,\% outlier records. The pipeline must adapt to the fold on its own.
+(3)~\emph{Validation}: the released set, overall and per discovered device.
+No subject identifiers exist, so subject-wise CV is impossible; with a second labelled
+device, leave-one-device-out CV would replace (2).
+
+\textbf{Preprocessing and features.} Per-device $z$-score (robust median/IQR scaling compared),
+clipping at $\pm\TunedClip$, ANOVA $F$ threshold; alternatives in the ablation: no adaptation, no
+selection, robust scaling, mutual-information top-$k$, PCA (95\,\% variance), LDA projection.
+
+\textbf{Models.} Gaussian NB, LDA with Ledoit--Wolf shrinkage~\cite{ledoit2004}, regularized
+QDA, logistic regression, linear SVM, RBF SVM, $k$NN ($k=10$, distance-weighted), random forest
+and extra trees (300 trees), LightGBM~\cite{ke2017lightgbm} (300 rounds), an MLP (256 hidden
+units), and a hard-voting ensemble (RBF SVM, linear SVM, logistic regression), all with the
+same preprocessing.
+
+\textbf{Tuning.} Grid $C\in\{1,3,10,30,100\}\times F_{\text{thr}}\in\{10,25,50,100,200,400\}$,
+then $\gamma\in\{0.25,0.5,1,2,4\}\times\gamma_{\text{scale}}$, then clip $\in\{2,3,4,5,8\}\times$
+\{$z$-score, robust\}; the $C\times F$ grid was re-run at the chosen clip to check consistency. Rule: highest validation
+accuracy; ties within 0.2\,pp go to the higher simulated-shift CV, then to the simpler model.
+
+\textbf{Metrics.} Accuracy (the leaderboard metric), macro-F1, per-class precision/recall,
+confusion matrices, and per-sample time as written to \texttt{time.txt}. Hardware: 4\,vCPU
+cloud container, Python 3.12, scikit-learn 1.9, single-threaded BLAS.

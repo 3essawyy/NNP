@@ -1,0 +1,171 @@
+[project]
+name = "nnp"
+version = "0.1.0"
+description = "NNP: robust Human Activity Recognition under device shift (Cairo University, Pattern Recognition course project)"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+# Runtime dependencies = what infer.py and the Docker image need.
+# Exported to requirements.txt with `uv run poe requirements` (ADR-002).
+dependencies = [
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "scipy>=1.13",
+    "joblib>=1.4",
+]
+
+[project.optional-dependencies]
+# Research-only: experiments, figures, the extra model families compared in the report.
+research = [
+    "lightgbm>=4.5",
+    "matplotlib>=3.9",
+    "py7zr>=0.22",
+]
+# Hugging Face Space (bonus, ADR-010)
+app = ["gradio>=5.0"]
+
+[project.scripts]
+nnp-infer = "nnp.inference.cli:main"
+nnp-train = "nnp.models.train:main"
+nnp-download = "nnp.data.download:main"
+nnp-experiments = "nnp.experiments.run:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "import-linter>=2.1",
+    "poethepoet>=0.31",
+    "pandas-stubs>=2.2",
+    "scipy-stubs>=1.14",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nnp"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+# ---------------------------------------------------------------- tasks (ADR-002)
+# Run any task with:  uv run poe <task>     (works on Windows, macOS, Linux)
+
+[tool.poe.tasks.data]
+help = "Download + extract the course dataset into data/ (gitignored)"
+cmd = "nnp-download"
+
+[tool.poe.tasks.train]
+help = "Train the final pipeline on data/ and write models/model.pkl"
+cmd = "nnp-train"
+
+[tool.poe.tasks.infer]
+help = "Run infer.py on the local validation folder (writes results.txt, time.txt)"
+cmd = "python infer.py data/radar_project_data/eval_data/data"
+
+[tool.poe.tasks.score]
+help = "Score results.txt against the local validation ground truth"
+cmd = "python -m nnp.evaluation.score results.txt data/radar_project_data/eval_data/ground_truth.txt time.txt"
+
+[tool.poe.tasks.experiments]
+help = "Run every experiment; writes experiments/results/*.json and report/figures/*"
+cmd = "nnp-experiments"
+
+[tool.poe.tasks.requirements]
+help = "Export runtime dependencies to requirements.txt (pinned from uv.lock)"
+cmd = "uv export --no-dev --no-hashes --no-emit-project --frozen --format requirements-txt -o requirements.txt"
+
+[tool.poe.tasks.app]
+help = "Start the Gradio demo (bonus) on http://127.0.0.1:7860"
+cmd = "python app/app.py"
+
+[tool.poe.tasks.package]
+help = "Build the submission zip (code_<team>.zip) in dist/"
+cmd = "python scripts/package_submission.py"
+
+[tool.poe.tasks.lint]
+help = "Ruff lint + format check"
+sequence = [{ cmd = "ruff check ." }, { cmd = "ruff format --check ." }]
+
+[tool.poe.tasks.fmt]
+help = "Auto-fix lint issues and format Python code"
+sequence = [{ cmd = "ruff check --fix ." }, { cmd = "ruff format ." }]
+
+[tool.poe.tasks.types]
+help = "mypy --strict"
+cmd = "mypy"
+
+[tool.poe.tasks.test]
+help = "Run the test suite (synthetic data; no dataset needed)"
+cmd = "pytest"
+
+[tool.poe.tasks.check]
+help = "Everything CI runs"
+sequence = ["lint", "types", "test"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+include = ["*.py", "*.pyi"]
+extend-exclude = ["report", "data"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF", "N", "S", "PT", "NPY"]
+# N803/N806: X, X_train etc. are the ML convention for design matrices.
+ignore = ["N803", "N806"]
+# Math symbols in docstrings/plot labels are intentional.
+allowed-confusables = ["×", "σ", "γ", "–", "−", "‖", "≥", "≤"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+# Model bundles are our own pickles, loaded from a fixed path (ADR-008).
+"src/nnp/models/bundle.py" = ["S301"]
+
+# ---------------------------------------------------------------- mypy
+[tool.mypy]
+strict = true
+python_version = "3.12"
+files = ["src", "tests", "infer.py", "app", "scripts"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = [
+    "sklearn.*", "joblib.*", "lightgbm.*", "matplotlib.*", "py7zr.*", "gradio.*",
+    "importlinter.*", "grimp.*",
+]
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["dataset: needs the real dataset in data/ (skipped when absent)"]
+
+# ---------------------------------------------------------------- import-linter
+# Mirrors docs/modules/README.md "Dependency direction". Checked by tests/test_architecture.py.
+[tool.importlinter]
+root_package = "nnp"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layered modules: upper layers may import lower, never the reverse"
+type = "layers"
+layers = [
+    "nnp.experiments",
+    "nnp.inference",
+    "nnp.models",
+    "nnp.features : nnp.preprocessing : nnp.evaluation",
+    "nnp.data",
+]
+
+[[tool.importlinter.contracts]]
+name = "Inference never imports research-only code (keeps the Docker image small)"
+type = "forbidden"
+source_modules = ["nnp.inference"]
+forbidden_modules = ["nnp.experiments", "nnp.evaluation", "lightgbm", "matplotlib"]
+allow_indirect_imports = true
