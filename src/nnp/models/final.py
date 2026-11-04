@@ -13,7 +13,7 @@ FINAL_CONFIG = PipelineConfig(
     scaling="zscore",
     clip=8.0,
     adapt=True,
-    selection=SelectionConfig(method="anova", threshold=50.0),
+    selection=SelectionConfig(method="anova", threshold=100.0),
     model="svc_rbf",
-    model_params={"C": 10.0, "gamma": "scale"},
+    model_params={"C": 100.0, "gamma": "scale"},
 )

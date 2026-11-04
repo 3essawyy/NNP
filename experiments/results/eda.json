@@ -46,7 +46,7 @@
     "520-559": 1067.577156575351,
     "560-560": 805.8049018945401
   },
-  "n_features_above_threshold": 334,
+  "n_features_above_threshold": 310,
   "block_knn": [
     {
       "block": "0-39",

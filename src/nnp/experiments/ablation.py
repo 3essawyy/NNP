@@ -21,10 +21,11 @@ from nnp.experiments.compare import SIM_SHIFT
 from nnp.features import ReductionConfig, SelectionConfig
 from nnp.models.cv import shifted_cv, validate
 from nnp.models.final import FINAL_CONFIG
-from nnp.models.pipeline import PipelineConfig
+from nnp.models.pipeline import HARPipeline, PipelineConfig
 
 
-def variants() -> list[tuple[str, PipelineConfig]]:
+def variants(n_selected: int) -> list[tuple[str, PipelineConfig]]:
+    """Ablation variants; MI keeps as many features as the shipped ANOVA filter."""
     f = FINAL_CONFIG
     r = dataclasses.replace
     return [
@@ -34,7 +35,10 @@ def variants() -> list[tuple[str, PipelineConfig]]:
         ("No adaptation and no selection", r(f, adapt=False, selection=SelectionConfig("none"))),
         ("No outlier clipping", r(f, clip=None)),
         ("Robust scaling (median/IQR)", r(f, scaling="robust")),
-        ("Mutual-information top-336", r(f, selection=SelectionConfig("mutual_info", k=336))),
+        (
+            f"Mutual-information top-{n_selected}",
+            r(f, selection=SelectionConfig("mutual_info", threshold=None, k=n_selected)),
+        ),
         ("+ PCA (95\\% variance)", r(f, reduction=ReductionConfig("pca", 0.95))),
         ("+ LDA projection (5-D)", r(f, reduction=ReductionConfig("lda", 5))),
     ]
@@ -44,7 +48,8 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
     tr = data.train
     k = 3 if quick else 5
     rows: list[dict[str, Any]] = []
-    for name, cfg in variants():
+    n_sel = int(HARPipeline(FINAL_CONFIG).fit(tr.X, tr.y, tr.devices).support.size)
+    for name, cfg in variants(n_sel):
         val = validate(cfg, tr.X, tr.y, tr.devices, data.X_val, data.y_val)
         sh = shifted_cv(cfg, tr.X, tr.y, tr.devices, SIM_SHIFT, k=k)
         rows.append(
