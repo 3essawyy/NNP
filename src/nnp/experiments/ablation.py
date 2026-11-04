@@ -59,21 +59,20 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
         print(f"  {name:45s} val {val.accuracy:.3f} {val.per_device}  shifted {sh.mean:.3f}")
     save_json("ablation", {"variants": rows})
 
+    def dev(r: dict[str, Any], i: int) -> str:
+        per = r["validation_per_device"]
+        return pct(per[i]) if r["n_devices"] > 1 and i < len(per) else "--"
+
     latex_table(
         "ablation",
         ["Variant", "Val. dev.\\,0", "Val. dev.\\,1", "Val. overall", "Sim.-shift CV"],
         [
-            [
-                r["variant"],
-                *(pct(a) for a in (r["validation_per_device"] + [float("nan")] * 2)[:2]),
-                pct(r["validation"]),
-                pct(r["shifted_cv"]),
-            ]
+            [r["variant"], dev(r, 0), dev(r, 1), pct(r["validation"]), pct(r["shifted_cv"])]
             for r in rows
         ],
-        "Ablation with the shipped RBF SVM (accuracy \\%). Devices are the ones discovered "
-        "on the validation set; without adaptation there is one domain, so the per-device "
-        "columns repeat the split found by the shipped pipeline only when adaptation is on.",
+        "Ablation with the shipped RBF SVM (accuracy \\%). Per-device columns use the devices "
+        "discovered on the validation set; variants without adaptation treat the set as one "
+        "domain (--).",
         "tab:ablation",
     )
     fig, ax = figure(6.2, 3.0)

@@ -26,9 +26,19 @@ validation does, which supports it as a label-free robustness check.
 \subsection{Ablation}
 \Cref{tab:ablation,fig:ablation} remove one step at a time from the shipped pipeline
 (\AblShipped\,\%). Without per-device adaptation accuracy falls to \AblNoAdapt\,\%; without
-feature selection to \AblNoSelect\,\%; without both to \AblNeither\,\%. Both steps are
-necessary, and they interact: the noisy features hurt the RBF kernel far more once the
-offsets are removed and they dominate the distances.
+feature selection to \AblNoSelect\,\%; without both to \AblNeither\,\%. Only the
+combination works: after per-device $z$-scoring, the $\approx$225 noise-dominated dimensions
+have the same unit variance as the informative ones and dominate RBF distances. Mutual
+information is not a substitute for the ANOVA filter: its top 336 features include 53
+noise-block features, and accuracy drops to 74\,\%. Clipping adds 0.3\,pp; robust (median/IQR)
+scaling is equivalent to $z$-scoring; PCA and an LDA projection both lose accuracy.
+
+\textbf{A blind spot of simulated-shift CV.} The synthetic phone rates the pipeline
+\emph{without} feature selection at 97\,\%, the best variant, while validation gives 35\,\%.
+Our synthetic shift (offsets, gains, noise) does not reproduce what makes the noise block
+non-transferable, so we treat simulated-shift CV as evidence about calibration robustness only.
+The feature-selection decision rests on the training-only diagnosis (\cref{fig:block_knn}) and
+on validation.
 
 \input{generated/ablation.tex}
 

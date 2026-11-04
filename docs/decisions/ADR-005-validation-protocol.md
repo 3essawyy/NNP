@@ -24,4 +24,5 @@ Model/hyperparameter selection rule: highest validation accuracy; ties within 0.
 | Leave-one-device-out | Needs ≥ 2 labelled devices (Device_A empty) — enabled automatically if it arrives |
 
 ## Consequences
-- Reports show all three numbers; disagreements are discussed (e.g. in-domain CV prefers keeping noisy features).
+- Reports show all three numbers; disagreements are discussed.
+- **Known blind spot (EXP-003):** simulated-shift CV rates the pipeline *without* feature selection at 97.3 % while validation gives 35.0 % — the synthetic phone (offsets, gains, noise) doesn't reproduce why the noise block fails to transfer. It is evidence about calibration robustness only; feature decisions rely on EXP-001 and validation.

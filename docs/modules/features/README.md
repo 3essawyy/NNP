@@ -30,4 +30,4 @@ ANOVA F = between-class variance / within-class variance per feature (Fisher cri
 `tests/test_features.py` (noise block dropped on synthetic data; top-k; error when nothing survives; reducer shapes).
 
 ## Known limitations
-Univariate: a feature useless alone but useful jointly would be dropped (not observed to matter: E3 MI selection gives the same accuracy).
+Univariate: a feature useless alone but useful jointly would be dropped. Mutual information is *not* a safe substitute here: it keeps 53 noise-block features and scores 74.4 % on validation (EXP-003).
