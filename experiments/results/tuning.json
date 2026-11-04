@@ -1,0 +1,233 @@
+{
+  "C_grid": [
+    1.0,
+    3.0,
+    10.0,
+    30.0,
+    100.0
+  ],
+  "F_grid": [
+    10.0,
+    25.0,
+    50.0,
+    100.0,
+    200.0,
+    400.0
+  ],
+  "cells": [
+    {
+      "C": 1.0,
+      "f_threshold": 10.0,
+      "validation": 0.9080906148867314,
+      "shifted_cv": 0.938676541964706
+    },
+    {
+      "C": 1.0,
+      "f_threshold": 25.0,
+      "validation": 0.9527508090614887,
+      "shifted_cv": 0.9375661251046572
+    },
+    {
+      "C": 1.0,
+      "f_threshold": 50.0,
+      "validation": 0.9527508090614887,
+      "shifted_cv": 0.9334043131925097
+    },
+    {
+      "C": 1.0,
+      "f_threshold": 100.0,
+      "validation": 0.9488673139158577,
+      "shifted_cv": 0.9334052368081137
+    },
+    {
+      "C": 1.0,
+      "f_threshold": 200.0,
+      "validation": 0.9453074433656958,
+      "shifted_cv": 0.9206438709099415
+    },
+    {
+      "C": 1.0,
+      "f_threshold": 400.0,
+      "validation": 0.944336569579288,
+      "shifted_cv": 0.9217515169231779
+    },
+    {
+      "C": 3.0,
+      "f_threshold": 10.0,
+      "validation": 0.8932038834951457,
+      "shifted_cv": 0.9481105826490497
+    },
+    {
+      "C": 3.0,
+      "f_threshold": 25.0,
+      "validation": 0.9614886731391585,
+      "shifted_cv": 0.9489425294044573
+    },
+    {
+      "C": 3.0,
+      "f_threshold": 50.0,
+      "validation": 0.9637540453074434,
+      "shifted_cv": 0.9461684499374944
+    },
+    {
+      "C": 3.0,
+      "f_threshold": 100.0,
+      "validation": 0.9611650485436893,
+      "shifted_cv": 0.9445047873305801
+    },
+    {
+      "C": 3.0,
+      "f_threshold": 200.0,
+      "validation": 0.9540453074433657,
+      "shifted_cv": 0.9309091656379898
+    },
+    {
+      "C": 3.0,
+      "f_threshold": 400.0,
+      "validation": 0.9508090614886732,
+      "shifted_cv": 0.938954781165446
+    },
+    {
+      "C": 10.0,
+      "f_threshold": 10.0,
+      "validation": 0.8728155339805825,
+      "shifted_cv": 0.9508865093472209
+    },
+    {
+      "C": 10.0,
+      "f_threshold": 25.0,
+      "validation": 0.9640776699029127,
+      "shifted_cv": 0.9506085010503819
+    },
+    {
+      "C": 10.0,
+      "f_threshold": 50.0,
+      "validation": 0.9669902912621359,
+      "shifted_cv": 0.950887202058924
+    },
+    {
+      "C": 10.0,
+      "f_threshold": 100.0,
+      "validation": 0.9653721682847897,
+      "shifted_cv": 0.9522733181768013
+    },
+    {
+      "C": 10.0,
+      "f_threshold": 200.0,
+      "validation": 0.9644012944983819,
+      "shifted_cv": 0.9400647362176926
+    },
+    {
+      "C": 10.0,
+      "f_threshold": 400.0,
+      "validation": 0.9592233009708738,
+      "shifted_cv": 0.9467233120116672
+    },
+    {
+      "C": 30.0,
+      "f_threshold": 10.0,
+      "validation": 0.8702265372168285,
+      "shifted_cv": 0.9533835041329489
+    },
+    {
+      "C": 30.0,
+      "f_threshold": 25.0,
+      "validation": 0.9669902912621359,
+      "shifted_cv": 0.9506078083386789
+    },
+    {
+      "C": 30.0,
+      "f_threshold": 50.0,
+      "validation": 0.9711974110032362,
+      "shifted_cv": 0.9514411405174926
+    },
+    {
+      "C": 30.0,
+      "f_threshold": 100.0,
+      "validation": 0.9686084142394822,
+      "shifted_cv": 0.9533832732290479
+    },
+    {
+      "C": 30.0,
+      "f_threshold": 200.0,
+      "validation": 0.9660194174757282,
+      "shifted_cv": 0.9458911343523585
+    },
+    {
+      "C": 30.0,
+      "f_threshold": 400.0,
+      "validation": 0.9656957928802589,
+      "shifted_cv": 0.9486645211076183
+    },
+    {
+      "C": 100.0,
+      "f_threshold": 10.0,
+      "validation": 0.8702265372168285,
+      "shifted_cv": 0.953105726740011
+    },
+    {
+      "C": 100.0,
+      "f_threshold": 25.0,
+      "validation": 0.9660194174757282,
+      "shifted_cv": 0.9500538698801101
+    },
+    {
+      "C": 100.0,
+      "f_threshold": 50.0,
+      "validation": 0.9676375404530745,
+      "shifted_cv": 0.9497763233910733
+    },
+    {
+      "C": 100.0,
+      "f_threshold": 100.0,
+      "validation": 0.9705501618122977,
+      "shifted_cv": 0.9553256368445043
+    },
+    {
+      "C": 100.0,
+      "f_threshold": 200.0,
+      "validation": 0.9686084142394822,
+      "shifted_cv": 0.941452468662877
+    },
+    {
+      "C": 100.0,
+      "f_threshold": 400.0,
+      "validation": 0.9656957928802589,
+      "shifted_cv": 0.9456135878633215
+    }
+  ],
+  "chosen": {
+    "C": 100.0,
+    "f_threshold": 100.0,
+    "validation": 0.9705501618122977,
+    "shifted_cv": 0.9553256368445043
+  },
+  "gamma_sweep": [
+    {
+      "gamma_mult": 0.25,
+      "gamma": 0.0008261240049973465,
+      "validation": 0.9663430420711974
+    },
+    {
+      "gamma_mult": 0.5,
+      "gamma": 0.001652248009994693,
+      "validation": 0.968284789644013
+    },
+    {
+      "gamma_mult": 1.0,
+      "gamma": 0.003304496019989386,
+      "validation": 0.9705501618122977
+    },
+    {
+      "gamma_mult": 2.0,
+      "gamma": 0.006608992039978772,
+      "validation": 0.96084142394822
+    },
+    {
+      "gamma_mult": 4.0,
+      "gamma": 0.013217984079957544,
+      "validation": 0.9346278317152104
+    }
+  ],
+  "rule": "max validation; ties (<=0.2pp) -> max simulated-shift CV -> smaller C -> higher F threshold"
+}
