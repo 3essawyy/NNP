@@ -11,6 +11,7 @@
 ## Acceptance criteria
 - [x] All brief sections present (Abstract … Workload Distribution)
 - [x] Every number from `report/generated/`; figures from `report/figures/`
+- [x] Compiles with TeX Live (`latexmk -pdf main.tex`): 6 pages, no undefined references; `report/main.pdf` committed as the current draft
 - [ ] Team names, number, workload table (TODO(team))
 - [ ] Moved into the course Overleaf template (TODO(team): share template)
 - [ ] Citations verified (T-014)

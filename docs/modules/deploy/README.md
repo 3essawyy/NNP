@@ -17,7 +17,7 @@ Everything that leaves the repository: Docker image, Hugging Face Space, the sub
 | Submission zip | `NNP_TEAM=<n> uv run poe package` → `dist/code_<n>.zip` | `readme.md`, `requirements.txt`, `infer.py`, `models/model.pkl`, `Dockerfile`, source, docs, report |
 
 ## Verified
-Docker: built and run in S002 (`--network none`), 96.7 % on validation, 0.43 ms/sample. CI job builds the image and runs it on synthetic data every PR.
+Docker: built and run in S002 (`--network none`) with the final model: 97.31 % on validation, 0.49 ms/sample (unrounded mean), image 654 MB. CI job builds the image and runs it on synthetic data every PR.
 
 ## Known limitations
 In this cloud sandbox the Docker build needs the proxy CA injected (scratch context only; the shipped Dockerfile is unchanged) — see SG-001 troubleshooting.

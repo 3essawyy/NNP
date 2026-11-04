@@ -17,7 +17,7 @@ No subject identifiers exist, so subject-wise CV is impossible; with a second la
 device, leave-one-device-out CV would replace (2).
 
 \textbf{Preprocessing and features.} Per-device $z$-score (robust median/IQR scaling compared),
-clipping at $\pm8$, ANOVA $F$ threshold; alternatives in the ablation: no adaptation, no
+clipping at $\pm\TunedClip$, ANOVA $F$ threshold; alternatives in the ablation: no adaptation, no
 selection, robust scaling, mutual-information top-$k$, PCA (95\,\% variance), LDA projection.
 
 \textbf{Models.} Gaussian NB, LDA with Ledoit--Wolf shrinkage~\cite{ledoit2004}, regularized
@@ -27,7 +27,8 @@ units), and a hard-voting ensemble (RBF SVM, linear SVM, logistic regression), a
 same preprocessing.
 
 \textbf{Tuning.} Grid $C\in\{1,3,10,30,100\}\times F_{\text{thr}}\in\{10,25,50,100,200,400\}$,
-then $\gamma\in\{0.25,0.5,1,2,4\}\times\gamma_{\text{scale}}$. Rule: highest validation
+then $\gamma\in\{0.25,0.5,1,2,4\}\times\gamma_{\text{scale}}$, then clip $\in\{2,3,4,5,8\}\times$
+\{$z$-score, robust\}; the $C\times F$ grid was re-run at the chosen clip to check consistency. Rule: highest validation
 accuracy; ties within 0.2\,pp go to the higher simulated-shift CV, then to the simpler model.
 
 \textbf{Metrics.} Accuracy (the leaderboard metric), macro-F1, per-class precision/recall,

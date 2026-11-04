@@ -14,7 +14,7 @@
 - [x] CI builds and runs the image on synthetic data
 
 ## Notes / log
-- 2026-11-04: verified in the session container (daemon started manually; proxy CA injected into a scratch build context only). 96.7 %, 0.43 ms/sample, image 655 MB.
+- 2026-11-04: verified in the session container (daemon started manually; proxy CA injected into a scratch build context only). First build: 96.7 % (pre-tuning model). Re-verified with the final model: **97.31 %**, 3090/3090 lines, 0.49 ms/sample unrounded (`time.txt` mean 0.31 ms because sub-0.5 ms lines round to 0.000), image 654 MB.
 
 ## Explain it (code-defense prep)
 - **Why slim + pinned pip?** Small, standard, identical versions to what we tested (pickles are version-sensitive).

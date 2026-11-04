@@ -36,8 +36,8 @@ We classify smartphone inertial telemetry (561 time- and frequency-domain featur
 activities when the test phones differ from the training phone. The released data contain a
 single labelled device; the validation set holds two devices whose sensors differ by
 per-feature calibration offsets and gains, and the feature set includes a block of
-noise-dominated features. A conventional pipeline (global standardization + RBF SVM) reaches
-only \AblNeither\,\% validation accuracy despite $>$95\,\% in-domain accuracy. We show that the
+noise-dominated features. A conventional pipeline (global standardization, all features, RBF SVM)
+reaches only \AblNeither\,\% validation accuracy despite 99.1\,\% in-domain cross-validation accuracy. We show that the
 shift is, to first order, a per-feature affine map, which per-device standardization cancels
 exactly. Since test records carry no device identity, we discover devices without labels by
 clustering activity-independent \emph{probe} features, and we remove noise-dominated features

@@ -6,14 +6,14 @@ Classifies smartphone inertial telemetry (561 features per record) into six acti
 
 | | Validation (released `eval_data`, 3090 files, 2 devices) |
 |---|---|
-| Accuracy | **96.7 %** (macro-F1 96.8 %) |
-| Time charged per sample (`time.txt`) | ≈ 0.5 ms mean, incl. amortized adaptation |
-| Same pipeline with a standard global scaler | ≈ 55 % |
+| Accuracy | **97.3 %** (macro-F1 97.4 %) |
+| Time charged per sample (`time.txt`) | 0.49 ms mean (p95 0.62 ms), incl. amortized adaptation |
+| Conventional pipeline (global scaler, all features, RBF SVM) | 24.7 % (despite 99.1 % in-domain CV) |
 
 Live demo (bonus): TODO(team) — see [SG-004](docs/SystemGuides/SG-004-hf-space.md).
 
 ## How it works (one paragraph)
-The training phone (Device_B) and the test phones differ by per-feature calibration offsets and gains. We standardize **each device with its own statistics**, which cancels any per-feature affine distortion. At test time we don't know which file came from which phone, so `infer.py` first **discovers the devices** without labels: it clusters the test set on activity-independent "probe" features (those with the lowest training ANOVA F-score). A train-only ANOVA filter drops ~225 noise-dominated features, and an RBF SVM classifies. The SVM decision is re-implemented in numpy for sub-millisecond per-sample latency. Details: [HLD](docs/architecture/HLD.md) · decisions: [ADRs](docs/decisions/README.md).
+The training phone (Device_B) and the test phones differ by per-feature calibration offsets and gains. We standardize **each device with its own statistics**, which cancels any per-feature affine distortion. At test time we don't know which file came from which phone, so `infer.py` first **discovers the devices** without labels: it clusters the test set on activity-independent "probe" features (those with the lowest training ANOVA F-score). A train-only ANOVA filter drops ~246 noise-dominated features, and an RBF SVM classifies. The SVM decision is re-implemented in numpy for sub-millisecond per-sample latency. Details: [HLD](docs/architecture/HLD.md) · decisions: [ADRs](docs/decisions/README.md).
 
 ## Quick start
 Needs [uv](https://docs.astral.sh/uv/) (it installs Python 3.12). Full guide incl. Windows: [SG-001](docs/SystemGuides/SG-001-setup-and-run.md).

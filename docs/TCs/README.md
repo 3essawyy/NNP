@@ -33,7 +33,7 @@ These prove the system meets the brief. Definitions: [acceptance.md](acceptance.
 | TC-008 | Metrics, shifts, score CLI | Automated (`tests/test_evaluation.py`) | Pass (2026-11-04) |
 | TC-009 | `infer.py` writes brief-format files in CWD, numeric order, amortized timing, robust to bad files | Automated (`tests/test_inference.py`) | Pass (2026-11-04) |
 | TC-010 | Docker image builds and runs offline; outputs correct | Automated (CI docker job) + Manual | Pass (2026-11-04, manual in session; CI on PR) |
-| TC-011 | HF Space serves predictions | Manual | Partial: local app builds; public deploy TODO(team) |
-| TC-012 | Report contains every brief section; numbers generated | Manual | Partial: team sections TODO |
-| TC-013 | Submission zip contents | Manual | Not run (at submission) |
-| TC-014 | Shipped model ≥ 95 % on validation through `infer.py` | Automated (`tests/test_dataset.py`, dataset only) + `poe infer && poe score` | Pass (2026-11-04: 96.7 %) |
+| TC-011 | HF Space serves predictions | Manual | Partial: app tested end-to-end locally via `gradio_client` (80 files → 2 devices); public deploy TODO(team) |
+| TC-012 | Report contains every brief section; numbers generated | Manual | Partial: compiles (6 pages, no undefined refs); team sections + course template TODO |
+| TC-013 | Submission zip contents | Manual | Pass (2026-11-04, `NNP_TEAM=TEST`: 179 files, 4.1 MB; unzipped `infer.py` in a plain-pip venv → 97.31 %); re-run with the real team number |
+| TC-014 | Shipped model ≥ 95 % on validation through `infer.py` | Automated (`tests/test_dataset.py`, dataset only) + `poe infer && poe score` | Pass (2026-11-04: 97.31 %) |

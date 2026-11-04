@@ -6,7 +6,7 @@ Status: **v1.0** (2026-11-04, sessions S001–S002). Satisfies REQ-M1…M4 and R
 Classify one smartphone-telemetry record (561 features) into one of six activities, **on a phone the model has never seen**. The released data makes the shift concrete (see [EXP-001](../experiments/EXP-001-shift-diagnosis.md)):
 
 * training = one device (`Device_B`, 3604 records; `Device_A` is empty),
-* validation = 3090 records from **two** devices: one with Device_B's calibration, one with a ≈ −10 offset on features 0–250 — and both shifted enough that a standard pipeline (global scaler + RBF SVM) scores **~55 %**,
+* validation = 3090 records from **two** devices: one with Device_B's calibration, one with a ≈ −10 offset on features 0–250 — and both shifted enough that a conventional pipeline (global scaler, all features, RBF SVM) scores **24.7 %** (99.1 % in-domain CV),
 * a block of ~200 features (indices ≈ 40–239) whose class signal is buried in heavy noise.
 
 The design goal is therefore *transfer*, not in-domain accuracy: every choice is judged on held-out-device behaviour.

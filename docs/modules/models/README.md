@@ -28,7 +28,7 @@ Compose preprocessing → selection → reduction → classifier into one object
 - The fast predictor is dropped from the pickle (`__getstate__`) and rebuilt on first use.
 
 ## Model zoo (defaults)
-`gaussian_nb`, `lda` (Ledoit–Wolf shrinkage), `qda` (shrinkage), `logreg` (C=1), `linear_svc` (C=0.05), `svc_rbf` (C=10, γ=scale), `knn` (k=10, distance), `random_forest`/`extra_trees` (300 trees), `lightgbm` (300, lr 0.05), `mlp` (256 hidden, α=0.01, early stopping), `ensemble` (hard vote RBF SVM + linear SVM + LR).
+`gaussian_nb`, `lda` (Ledoit–Wolf shrinkage), `qda` (reg_param 0.5), `logreg` (C=1), `linear_svc` (C=0.05), `svc_rbf` (C=10, γ=scale; the shipped model uses C=100 — `final.py`), `knn` (k=10, distance), `random_forest`/`extra_trees` (300 trees), `lightgbm` (300, lr 0.05), `mlp` (256 hidden, α=0.01, early stopping), `ensemble` (hard vote RBF SVM + linear SVM + LR).
 
 ## Tests
 `tests/test_pipeline.py` (adaptation beats global scaler under shift; batch = single; fast SVC exact; pickle round-trip; fallback; every family trains; CV protocols).

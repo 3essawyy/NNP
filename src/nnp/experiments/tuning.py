@@ -104,19 +104,25 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
 
     latex_table(
         "clip",
-        ["Clip", *[f"{s} val." for s in SCALINGS], *[f"{s} sim.-shift" for s in SCALINGS]],
+        ["Clip", "Val. $z$", "Val. robust", "Sim. $z$", "Sim. robust"],
         [
             [
                 f"$\\pm{c:g}$",
                 *(
                     pct(
-                        next(x["validation"] for x in clips if x["clip"] == c and x["scaling"] == s)
+                        next(
+                            x["validation"] for x in clips if x["clip"] == c and x["scaling"] == s
+                        ),
+                        2,
                     )
                     for s in SCALINGS
                 ),
                 *(
                     pct(
-                        next(x["shifted_cv"] for x in clips if x["clip"] == c and x["scaling"] == s)
+                        next(
+                            x["shifted_cv"] for x in clips if x["clip"] == c and x["scaling"] == s
+                        ),
+                        2,
                     )
                     for s in SCALINGS
                 ),
@@ -124,7 +130,8 @@ def run(data: Data, quick: bool = False) -> dict[str, Any]:
             for c in CLIP_GRID
         ],
         f"Outlier clipping and scaling at $C={chosen['C']:g}$, $F>{chosen['f_threshold']:g}$ "
-        "(accuracy \\%).",
+        "(accuracy \\%; Val. = validation, Sim. = simulated-shift CV; $z$ = $z$-score, "
+        "robust = median/IQR).",
         "tab:clip",
     )
 

@@ -9,6 +9,6 @@
 - **TCs:** TC-013
 
 ## Acceptance criteria
-- [x] `NNP_TEAM=<n> uv run poe package` builds `dist/code_<n>.zip` with `readme.md`
+- [x] `NNP_TEAM=<n> uv run poe package` builds `dist/code_<n>.zip` with `readme.md` (TC-013 passed with a test team number: unzipped `infer.py` → 97.31 % in a plain-pip env)
 - [ ] Team number filled; zip + report PDF uploaded to the course Drive (TODO(team))
 - [ ] `submission` tag on `main`

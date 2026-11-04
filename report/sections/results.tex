@@ -2,16 +2,17 @@
 \label{sec:results}
 
 \subsection{Model comparison}
-\Cref{tab:compare,fig:compare} compare all families under the same preprocessing. With a
-global scaler, linear, kernel and distance models fall to 55--65\,\% on the validation devices.
-Tree ensembles degrade least (about 80\,\%). A plausible reason is that each tree uses
-few features, and many splits fall on the frequency-domain features (indices above 250), which
-carry no calibration offset. A global scaler, in contrast, passes the offset into every
-distance and dot product. With per-device adaptation every
-family improves. The linear and kernel models reach 95--97\,\%, and the RBF SVM is best
-(\BestCompareVal\,\%). Trees and $k$NN stay behind, and tree ensembles also cost tens of
-milliseconds per single-row prediction. Simulated-shift CV ranks the families much like
-validation does, which supports it as a label-free robustness check.
+\Cref{tab:compare,fig:compare} compare all families under the shipped preprocessing, each
+with default hyperparameters. Per-device adaptation improves every family, by 7.5\,pp (MLP)
+to 36\,pp (LightGBM). With a global scaler, $\pm3$ clipping already limits how far a
+calibration offset can push a standardized feature, so some models keep 80--88\,\%, but none
+comes close to the adapted pipelines. The RBF SVM is the best family on all three estimates
+(\BestCompareVal\,\% on validation at its default $C=10$) and costs about half a millisecond
+per sample. A hard-voting ensemble of the three strongest models is \emph{not} better
+(96.4\,\%) and is three times slower. Tree ensembles transfer worse and cost
+$\approx$88\,ms per single-row prediction, two orders of magnitude more than the SVM, which
+matters because running time enters the ranking. Simulated-shift CV ranks the families much
+like validation does (4 of the top 5 agree).
 
 \input{generated/compare.tex}
 
@@ -26,19 +27,22 @@ validation does, which supports it as a label-free robustness check.
 \subsection{Ablation}
 \Cref{tab:ablation,fig:ablation} remove one step at a time from the shipped pipeline
 (\AblShipped\,\%). Without per-device adaptation accuracy falls to \AblNoAdapt\,\%; without
-feature selection to \AblNoSelect\,\%; without both to \AblNeither\,\%. Only the
-combination works: after per-device $z$-scoring, the $\approx$225 noise-dominated dimensions
-have the same unit variance as the informative ones and dominate RBF distances. Mutual
-information is not a substitute for the ANOVA filter: its top 336 features include 53
-noise-block features, and accuracy drops to 74\,\%. Clipping adds 0.3\,pp; robust (median/IQR)
-scaling is equivalent to $z$-scoring; PCA and an LDA projection both lose accuracy.
+feature selection to \AblNoSelect\,\%; without both to \AblNeither\,\%, although that
+conventional pipeline scores 99.1\,\% in in-domain cross-validation. Only the combination works.
+After per-device $z$-scoring, the $\approx$246 noise-dominated dimensions have the same unit
+variance as the informative ones and dominate RBF distances, so removing the offsets helps only
+once those dimensions are dropped. Mutual information is not a substitute for the ANOVA
+filter. Its top \NSelected{} features include 32 noise-block features, and accuracy drops to
+81\,\%. MI detects non-linear dependence that survives the noise but does not transfer. Clipping
+adds 0.4\,pp, robust (median/IQR) scaling is 0.6\,pp lower, and neither PCA nor an LDA
+projection helps (the latter collapses under simulated shift).
 
 \textbf{A blind spot of simulated-shift CV.} The synthetic phone rates the pipeline
-\emph{without} feature selection at 97\,\%, the best variant, while validation gives 35\,\%.
+\emph{without} feature selection at 98\,\%, the best variant, while validation gives 30\,\%.
 Our synthetic shift (offsets, gains, noise) does not reproduce what makes the noise block
-non-transferable, so we treat simulated-shift CV as evidence about calibration robustness only.
-The feature-selection decision rests on the training-only diagnosis (\cref{fig:block_knn}) and
-on validation.
+non-transferable. We therefore treat simulated-shift CV as evidence about calibration robustness
+only; the feature-selection decision rests on the training-only diagnosis (\cref{fig:block_knn})
+and on validation.
 
 \input{generated/ablation.tex}
 
@@ -50,23 +54,36 @@ on validation.
 \end{figure}
 
 \subsection{Tuning}
-\Cref{fig:tuning} shows the $C\times F_{\text{thr}}$ grid (range \GridMin--\GridMax\,\%). The
-optimum is a broad plateau, so the chosen point ($C=\TunedC$, $F>\TunedF$, \TunedVal\,\%) is not
-a sharp, validation-specific optimum.
+\Cref{fig:tuning} shows the $C\times F_{\text{thr}}$ grid at the final clip of $\pm\TunedClip$
+(range \GridMin--\GridMax\,\%). A threshold of 10 keeps part of the noise block (85--88\,\%).
+For thresholds of 25--400 and $C\ge3$ the surface is a broad plateau of 95.7--97.3\,\%, so the
+chosen point ($C=\TunedC$, $F>\TunedF$, \TunedVal\,\%) is not a sharp, validation-specific
+optimum. The default $\gamma$ is the peak of a $\gamma$ sweep. \Cref{tab:clip} tunes the
+outlier clip and the scaling estimator. Clipping at $\pm2$--$\pm5$ beats $\pm8$, and $z$-scoring
+beats robust scaling by 0.5--0.8\,pp; the rule picks $\pm3$. Re-running the grid at $\pm3$
+re-selects the same $C$ and threshold. Against the untuned default ($C=10$, $F>50$, $\pm8$:
+96.7\,\%), tuning gains 0.6\,pp, about 19 files. That is of the order of the optimism
+introduced by selecting on validation.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.85\linewidth]{tuning.pdf}
-  \caption{Validation accuracy over SVM $C$ and ANOVA threshold.}
+  \caption{Validation accuracy over SVM $C$ and ANOVA threshold (clip $\pm\TunedClip$).}
   \label{fig:tuning}
 \end{figure}
 
+\input{generated/clip.tex}
+
 \subsection{Robustness to controlled shifts}
 \Cref{fig:robust} applies increasing synthetic shifts to a held-out 20\,\% of Device\_B.
-Per-device adaptation makes accuracy invariant to calibration offsets and gains of any size,
-while the global scaler collapses as soon as offsets exceed about one standard deviation.
-Additive noise and outlier records degrade both variants. Adaptation does not remove noise,
-which marks the method's limit.
+Per-device adaptation makes accuracy exactly invariant to calibration offsets and gains, as the
+algebra in \cref{sec:system} predicts. The global scaler collapses once offsets reach two
+standard deviations and falls below chance by ten. Additive noise degrades both (adaptation
+removes no noise). Outlier \emph{records} are a genuine weakness of adaptation: they contaminate
+the device's own mean and standard deviation, so at 20\,\% outliers the adapted pipeline keeps
+85\,\% while the global scaler, whose statistics come from clean training data, keeps 95\,\%.
+Clipping at $\pm3$ recovered part of this (from 77\,\% at $\pm8$); robust statistics would
+recover more at a small validation cost.
 
 \begin{figure}[t]
   \centering
@@ -81,15 +98,16 @@ which marks the method's limit.
 \subsection{Final system and error analysis}
 Through the exact \texttt{infer.py} code path, the shipped model reaches \FinalAcc\,\% accuracy
 (macro-F1 \FinalMacroF\,\%) on the validation set: \FinalDevZero\,\% and \FinalDevOne\,\% on the
-two discovered devices (\cref{tab:per_class,fig:confusion}). The dominant failure mode is
-Sitting~$\leftrightarrow$~Standing (\SitStand{} of the errors): both are static, upright
-postures with nearly identical inertial signatures, the classic confusion on this feature
-set~\cite{anguita2013}. Dynamic classes are rarely confused with static ones, and Laying is
-almost always correct thanks to its distinct gravity orientation.
+two discovered devices (\cref{tab:per_class,fig:confusion}). Of the 83 errors, \SitStand{} are
+Sitting~$\leftrightarrow$~Standing. Both are static upright postures with nearly identical
+inertial signatures, the classic confusion of this feature set~\cite{anguita2013}. The
+remaining 11 errors are among the three walking classes. No dynamic activity is ever confused
+with a static one, and Laying is recognized perfectly thanks to its distinct gravity orientation.
+The failure mode is the same on both devices, so it stems from the features, not from the shift.
 
 Timing: mean \FinalMeanMs\,ms and 95th percentile \FinalPNinetyFiveMs\,ms per sample as written to
-\texttt{time.txt}, \FinalTotalS\,s in total for \NVal{} samples including the amortized
-adaptation (\cref{fig:timing}).
+\texttt{time.txt}, \FinalTotalS\,s in total for \NVal{} samples, including the amortized
+\FinalAdaptS\,s adaptation (\cref{fig:timing}).
 
 \input{generated/per_class.tex}
 

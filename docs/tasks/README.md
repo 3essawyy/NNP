@@ -17,6 +17,6 @@ Milestone: **M1 = submission** (report PDF, `code_<team>.zip`, model, Dockerfile
 | [T-009](T-009-inference.md) | `infer.py`: ordering, formats, amortized timing, fast SVM path | inference, models | T-007 | W+0 | Done |
 | [T-010](T-010-docker.md) | Dockerfile + CI build-and-run | deploy | T-009 | W+0 | Done |
 | [T-011](T-011-hf-space.md) | Bonus: Gradio app + HF Space bundle | deploy | T-009 | W+0 | Done (deploy by team: Todo) |
-| [T-012](T-012-report.md) | LaTeX report wired to generated results | report | T-008 | W+0 | Draft — team info + template pending |
-| [T-013](T-013-submission-pack.md) | Submission zip, README, final checks, tag | deploy, docs | T-010, T-012 | before deadline | Todo (script done) |
+| [T-012](T-012-report.md) | LaTeX report wired to generated results | report | T-008 | W+0 | Draft compiled — team info + template pending |
+| [T-013](T-013-submission-pack.md) | Submission zip, README, final checks, tag | deploy, docs | T-010, T-012 | before deadline | Todo (script + TC-013 verified; needs team number) |
 | [T-014](T-014-literature-verification.md) | Literature survey: verify every citation, extend related work | report | T-012 | before deadline | Todo (team) |

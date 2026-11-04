@@ -35,4 +35,4 @@ Implement the brief's §9 contract: `python infer.py <data_dir>` → `results.tx
 `tests/test_inference.py` (CLI subprocess formats, numeric order via accuracy, amortized timing, unreadable file, parent folder, empty folder); `tests/test_dataset.py` on the real data when present; CI Docker job.
 
 ## Measured (validation, 3090 files)
-96.7 % accuracy; adaptation ≈ 0.2–0.4 s; ≈ 0.4–0.5 ms charged per sample; whole run ≈ 4–6 s wall time.
+97.3 % accuracy (macro-F1 97.4 %); adaptation ≈ 0.3 s; mean 0.49 ms / p95 0.62 ms charged per sample; whole run ≈ 4–6 s wall time (EXP-006).

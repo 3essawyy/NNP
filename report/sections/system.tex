@@ -43,7 +43,8 @@ $a_j\sigma_j$, so
 \end{equation}
 Standardizing every device with \emph{its own} statistics therefore cancels any per-feature
 affine distortion; a scaler fitted on the training device cannot. Standardized values are
-clipped to $\pm8$ (winsorizing~\cite{huber1981}) and missing values map to 0.
+clipped to $\pm\TunedClip$ (winsorizing~\cite{huber1981}; tuned in \cref{sec:results}) and missing
+values map to 0.
 
 \textbf{Unsupervised device discovery.} Test files carry no device identity, and clustering on
 all features would recover \emph{activities} (static vs.\ dynamic postures are well separated),

@@ -13,7 +13,7 @@
 - [x] Numeric order guaranteed and tested
 - [x] Timer around per-sample compute only; adaptation amortized
 - [x] Exact numpy RBF-SVM decision (~0.3 ms vs ~1 ms)
-- [x] Validation: 96.7 %, ≈ 0.5 ms charged per sample
+- [x] Validation: 97.3 % (shipped config, EXP-006), ≈ 0.5 ms charged per sample
 
 ## Notes / log
 - 2026-11-04: per-sample 1.07 ms with `SVC.predict` → 0.52 ms with `FastRBFSVC` (incl. amortized adaptation); results byte-identical.

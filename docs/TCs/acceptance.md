@@ -13,7 +13,7 @@ Short TCs live here; long ones get their own file from [_TEMPLATE.md](_TEMPLATE.
 
 ### TC-010 — Docker
 **Steps:** `docker build -t nnp-har .`; `docker run --rm --network none -v $PWD/data/radar_project_data/eval_data/data:/data:ro -v $PWD/out:/out nnp-har`; `uv run python -m nnp.evaluation.score out/results.txt data/radar_project_data/eval_data/ground_truth.txt out/time.txt`. **Expected:** both files, accuracy as in E6.
-**Evidence (2026-11-04):** 3090 lines, 96.7 %, mean 0.43 ms/sample, `--network none`.
+**Evidence (2026-11-04, final model):** 3090 lines each, 97.31 %, 0.49 ms/sample unrounded, `--network none`, image 654 MB.
 
 ### TC-011 — HF Space
 **Steps:** [SG-004](../SystemGuides/SG-004-hf-space.md); upload ≥ 60 validation CSVs. **Expected:** table of predictions, "2 device(s) discovered" when both halves are included.
