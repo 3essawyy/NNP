@@ -2,17 +2,17 @@
 \begin{table}[t]
 \centering
 \small
-\caption{Outlier clipping and scaling at $C=100$, $F>100$ (accuracy \%).}
+\caption{Outlier clipping and scaling at $C=100$, $F>100$ (accuracy \%; Val. = validation, Sim. = simulated-shift CV; $z$ = $z$-score, robust = median/IQR).}
 \label{tab:clip}
 \begin{tabular}{lrrrr}
 \toprule
-Clip & zscore val. & robust val. & zscore sim.-shift & robust sim.-shift \\
+Clip & Val. $z$ & Val. robust & Sim. $z$ & Sim. robust \\
 \midrule
-$\pm2$ & 97.4 & 96.6 & 96.1 & 94.5 \\
-$\pm3$ & 97.3 & 96.7 & 96.2 & 94.7 \\
-$\pm4$ & 97.2 & 96.7 & 95.9 & 94.9 \\
-$\pm5$ & 97.2 & 96.8 & 96.0 & 94.6 \\
-$\pm8$ & 97.1 & 96.6 & 95.5 & 94.0 \\
+$\pm2$ & 97.38 & 96.57 & 96.14 & 94.48 \\
+$\pm3$ & 97.31 & 96.67 & 96.20 & 94.67 \\
+$\pm4$ & 97.25 & 96.73 & 95.95 & 94.92 \\
+$\pm5$ & 97.25 & 96.76 & 96.00 & 94.62 \\
+$\pm8$ & 97.06 & 96.60 & 95.53 & 93.95 \\
 \bottomrule
 \end{tabular}
 \end{table}
