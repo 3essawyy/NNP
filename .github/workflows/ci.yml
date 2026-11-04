@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Python (ruff, mypy, pytest, import contracts)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install Python + dependencies (locked)
+        run: uv sync --locked --extra research
+      - name: requirements.txt is in sync with uv.lock
+        run: |
+          uv run poe requirements
+          git diff --exit-code -- requirements.txt \
+            || (echo "::error::requirements.txt is stale. Run 'uv run poe requirements' and commit." && exit 1)
+      - name: Lint (ruff)
+        run: uv run poe lint
+      - name: Types (mypy --strict)
+        run: uv run poe types
+      - name: Tests (synthetic data; dataset tests skip)
+        run: uv run poe test
+
+  docker:
+    name: Docker image builds and runs infer.py
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Build image
+        run: docker build -t nnp-har .
+      - name: Synthetic evaluation folder
+        run: |
+          uv sync --locked
+          uv run python -c "from pathlib import Path; from tests.conftest import make_synthetic, write_sample_folder; write_sample_folder(Path('ci_eval/data'), make_synthetic().X_shift[:150])"
+      - name: Run container like the graders would
+        run: |
+          mkdir -p out && chmod 777 out
+          docker run --rm -v "$PWD/ci_eval/data:/data:ro" -v "$PWD/out:/out" nnp-har
+          test "$(wc -l < out/results.txt)" -eq 150
+          test "$(wc -l < out/time.txt)" -eq 150
+          grep -Evq '^[0-5]$' out/results.txt && exit 1 || true
+          grep -Evq '^[0-9]+\.[0-9]{3}$' out/time.txt && exit 1 || true
+          head -3 out/results.txt out/time.txt

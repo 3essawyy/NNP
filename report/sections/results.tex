@@ -1,0 +1,98 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Model comparison}
+\Cref{tab:compare,fig:compare} compare all families under the same preprocessing. With a
+global scaler, linear, kernel and distance models fall to 55--65\,\% on the validation devices.
+Tree ensembles degrade least (about 80\,\%). A plausible reason is that each tree uses
+few features, and many splits fall on the frequency-domain features (indices above 250), which
+carry no calibration offset. A global scaler, in contrast, passes the offset into every
+distance and dot product. With per-device adaptation every
+family improves. The linear and kernel models reach 95--97\,\%, and the RBF SVM is best
+(\BestCompareVal\,\%). Trees and $k$NN stay behind, and tree ensembles also cost tens of
+milliseconds per single-row prediction. Simulated-shift CV ranks the families much like
+validation does, which supports it as a label-free robustness check.
+
+\input{generated/compare.tex}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{compare.pdf}
+  \caption{Accuracy of each family: validation with a global scaler, simulated-shift CV, and
+  validation with per-device adaptation.}
+  \label{fig:compare}
+\end{figure}
+
+\subsection{Ablation}
+\Cref{tab:ablation,fig:ablation} remove one step at a time from the shipped pipeline
+(\AblShipped\,\%). Without per-device adaptation accuracy falls to \AblNoAdapt\,\%; without
+feature selection to \AblNoSelect\,\%; without both to \AblNeither\,\%. Both steps are
+necessary, and they interact: the noisy features hurt the RBF kernel far more once the
+offsets are removed and they dominate the distances.
+
+\input{generated/ablation.tex}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{ablation.pdf}
+  \caption{Ablation of the preprocessing (validation accuracy).}
+  \label{fig:ablation}
+\end{figure}
+
+\subsection{Tuning}
+\Cref{fig:tuning} shows the $C\times F_{\text{thr}}$ grid (range \GridMin--\GridMax\,\%). The
+optimum is a broad plateau, so the chosen point ($C=\TunedC$, $F>\TunedF$, \TunedVal\,\%) is not
+a sharp, validation-specific optimum.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.85\linewidth]{tuning.pdf}
+  \caption{Validation accuracy over SVM $C$ and ANOVA threshold.}
+  \label{fig:tuning}
+\end{figure}
+
+\subsection{Robustness to controlled shifts}
+\Cref{fig:robust} applies increasing synthetic shifts to a held-out 20\,\% of Device\_B.
+Per-device adaptation makes accuracy invariant to calibration offsets and gains of any size,
+while the global scaler collapses as soon as offsets exceed about one standard deviation.
+Additive noise and outlier records degrade both variants. Adaptation does not remove noise,
+which marks the method's limit.
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{robustness_offset.pdf}\end{subfigure}
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{robustness_gain_sigma.pdf}\end{subfigure}
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{robustness_noise.pdf}\end{subfigure}
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{robustness_outlier_fraction.pdf}\end{subfigure}
+  \caption{Accuracy under controlled synthetic device shifts: adapted vs.\ global scaler.}
+  \label{fig:robust}
+\end{figure}
+
+\subsection{Final system and error analysis}
+Through the exact \texttt{infer.py} code path, the shipped model reaches \FinalAcc\,\% accuracy
+(macro-F1 \FinalMacroF\,\%) on the validation set: \FinalDevZero\,\% and \FinalDevOne\,\% on the
+two discovered devices (\cref{tab:per_class,fig:confusion}). The dominant failure mode is
+Sitting~$\leftrightarrow$~Standing (\SitStand{} of the errors): both are static, upright
+postures with nearly identical inertial signatures, the classic confusion on this feature
+set~\cite{anguita2013}. Dynamic classes are rarely confused with static ones, and Laying is
+almost always correct thanks to its distinct gravity orientation.
+
+Timing: mean \FinalMeanMs\,ms and 95th percentile \FinalPNinetyFiveMs\,ms per sample as written to
+\texttt{time.txt}, \FinalTotalS\,s in total for \NVal{} samples including the amortized
+adaptation (\cref{fig:timing}).
+
+\input{generated/per_class.tex}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{confusion.pdf}
+  \caption{Confusion matrix of the shipped model on the validation set (counts; colour = row-normalized).}
+  \label{fig:confusion}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\linewidth]{timing.pdf}
+  \caption{Per-sample time charged in \texttt{time.txt}.}
+  \label{fig:timing}
+\end{figure}

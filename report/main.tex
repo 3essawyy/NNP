@@ -1,0 +1,61 @@
+% NNP — Robust Human Activity Recognition under device shift.
+% Layout: IEEE conference placeholder until the course Overleaf template is supplied
+% (TODO(team): move sections into the course template; only this preamble changes).
+% Every number comes from generated/macros.tex and generated/*.tex (`uv run poe experiments`).
+\documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+
+\graphicspath{{figures/}}
+\input{generated/macros.tex}
+
+\newcommand{\TeamNumber}{TEAM\_NN}         % TODO(team)
+\newcommand{\HFLink}{\textit{TODO(team): Hugging Face Space URL}}
+\newcommand{\RepoLink}{\url{https://github.com/3essawyy/NNP}}
+
+\begin{document}
+
+\title{Robust Human Activity Recognition Across Smartphones\\
+via Unsupervised Per-Device Standardization}
+
+\author{\IEEEauthorblockN{Team \TeamNumber: Member 1, Member 2, Member 3, Member 4 % TODO(team)
+}
+\IEEEauthorblockA{Computer Engineering Department, Faculty of Engineering, Cairo University}}
+
+\maketitle
+
+\begin{abstract}
+We classify smartphone inertial telemetry (561 time- and frequency-domain features) into six
+activities when the test phones differ from the training phone. The released data contain a
+single labelled device; the validation set holds two devices whose sensors differ by
+per-feature calibration offsets and gains, and the feature set includes a block of
+noise-dominated features. A conventional pipeline (global standardization + RBF SVM) reaches
+only \AblNeither\,\% validation accuracy despite $>$95\,\% in-domain accuracy. We show that the
+shift is, to first order, a per-feature affine map, which per-device standardization cancels
+exactly. Since test records carry no device identity, we discover devices without labels by
+clustering activity-independent \emph{probe} features, and we remove noise-dominated features
+with a training-only ANOVA filter. The final system, an RBF SVM on \NSelected{} selected
+features with a numpy re-implementation of its one-vs-one decision, reaches
+\textbf{\FinalAcc\,\%} validation accuracy (macro-F1 \FinalMacroF\,\%) at
+\FinalMeanMs\,ms per sample on a CPU, all adaptation costs included.
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/system}
+\input{sections/setup}
+\input{sections/results}
+\input{sections/conclusion}
+\input{sections/workload}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

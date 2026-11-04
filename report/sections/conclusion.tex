@@ -1,0 +1,23 @@
+\section{Conclusion}
+\textbf{Capabilities.} The system recognizes six activities on unseen phones with
+\FinalAcc\,\% validation accuracy at \FinalMeanMs\,ms per sample on a CPU. It does so by turning
+the device-shift problem into a normalization problem: discover devices without labels, then
+standardize each with its own statistics. The pipeline is reproducible end to end
+(\texttt{poe train}, \texttt{poe experiments}, Docker) and every report number is generated
+from code.
+
+\textbf{Limitations.}
+(i)~The correction is first-order: it cancels per-feature offsets and gains, not nonlinear
+distortions or cross-feature mixing.
+(ii)~Per-device statistics assume similar activity mixes across devices; a device dominated by
+one activity would be mis-centred (prior shift).
+(iii)~Adaptation needs a batch: fewer than 30 records from a device fall back to training
+statistics.
+(iv)~Only one labelled training device was available, and validation labels guided model
+selection, so the validation score is optimistic for truly new phones.
+(v)~Sitting and Standing remain confusable.
+
+\textbf{Future work.} Second-order alignment (CORAL~\cite{sun2016coral}) or class-balanced
+statistics estimated with pseudo-labels to address prior shift; leave-one-device-out
+training once Device\_A data is available; a posture-specific second-stage classifier for
+Sitting/Standing; and per-sample adaptation for streaming use.
