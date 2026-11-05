@@ -11,8 +11,9 @@ from code.
 distortions or cross-feature mixing.
 (ii)~Per-device statistics assume similar activity mixes across devices; a device dominated by
 one activity would be mis-centred (prior shift).
-(iii)~Adaptation needs a batch: fewer than 30 records from a device fall back to training
-statistics; and outlier \emph{records} contaminate a device's statistics (85\,\% vs.\ 95\,\% for a
+(iii)~Adaptation needs a batch: device groups under 12 records fall back to training statistics
+and a logistic-regression fallback (about 88\,\% per file), and folders of 10--20 files remain the
+weakest case (86--88\,\%); and outlier \emph{records} contaminate a device's statistics (85\,\% vs.\ 95\,\% for a
 global scaler at 20\,\% outliers).
 (iv)~Only one labelled training device was available, and validation labels guided model
 selection, so the validation score is optimistic for truly new phones.

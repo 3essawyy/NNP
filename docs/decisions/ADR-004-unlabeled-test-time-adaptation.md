@@ -1,6 +1,6 @@
 # ADR-004: Unlabeled test-time adaptation (per-device standardization) and honest timing
 
-- **Status:** Accepted
+- **Status:** Accepted (minimum sizes amended by [ADR-013](ADR-013-small-test-set-fallback.md))
 - **Date:** 2026-11-04
 - **Session:** S001 (policy), S002 (method)
 - **Related:** REQ-M1, REQ-M5…M7, REQ-I3, T-005, T-009, EXP-001, EXP-003

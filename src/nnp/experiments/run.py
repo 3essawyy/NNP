@@ -12,7 +12,7 @@ import time
 from collections.abc import Callable
 from typing import Any
 
-from nnp.experiments import ablation, compare, eda, final, robustness, tuning
+from nnp.experiments import ablation, compare, eda, final, robustness, smalln, tuning
 from nnp.experiments.common import Data, load_data
 
 STAGES: dict[str, Callable[[Data, bool], dict[str, Any]]] = {
@@ -21,6 +21,7 @@ STAGES: dict[str, Callable[[Data, bool], dict[str, Any]]] = {
     "ablation": ablation.run,
     "tuning": tuning.run,
     "robustness": robustness.run,
+    "smalln": smalln.run,
     "final": final.run,
 }
 

@@ -9,4 +9,5 @@ One record per question that changed (or confirmed) a design decision. Raw outpu
 | [EXP-003](EXP-003-ablation.md) | What does each preprocessing step buy? | E3 | see record | ADR-004, ADR-006 |
 | [EXP-004](EXP-004-tuning.md) | Best C / F-threshold / γ? | E4 | see record | ADR-007 |
 | [EXP-005](EXP-005-robustness.md) | How does accuracy degrade under controlled shifts? | E5 | see record | limitations |
-| [EXP-006](EXP-006-final.md) | Shipped model through infer.py: accuracy, errors, timing | E6 | see record | — |
+| [EXP-006](EXP-006-final.md) | Shipped model through infer.py: accuracy, errors, timing | E6 | 97.31 %; 72/83 errors Sit↔Stand | — |
+| [EXP-007](EXP-007-small-test-sets.md) | How accurate are small test folders, and how do we fix them? | E7 | 74–84 % → 85–95 % for N < 100; full set unchanged | ADR-013 |

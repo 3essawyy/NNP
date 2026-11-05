@@ -86,8 +86,10 @@ def test_every_model_family_trains(synthetic: Synthetic, name: str) -> None:
     pred = p.predict(synthetic.X_shift[:60])
     assert pred.shape == (60,)
     assert set(pred) <= set(range(6))
-    if name != "svc_rbf":
-        assert isinstance(p._fast, GenericPredictor)
+    from nnp.models.fast import FastLinear, FastRBFSVC
+
+    expected = {"svc_rbf": FastRBFSVC, "logreg": FastLinear, "linear_svc": FastLinear}
+    assert isinstance(p._fast, expected.get(name, GenericPredictor))
 
 
 def test_cv_protocols_run(synthetic: Synthetic) -> None:
@@ -107,3 +109,43 @@ def test_cv_protocols_run(synthetic: Synthetic) -> None:
         synthetic.y_shift,
     )
     assert plain.n_devices == 1
+
+
+def test_fast_linear_is_exact(synthetic: Synthetic) -> None:
+    from nnp.models.fast import FastLinear, compile_predictor
+
+    for name in ("logreg", "linear_svc"):
+        cfg = PipelineConfig(model=name, selection=SelectionConfig("anova", threshold=None, k=40))
+        p = HARPipeline(cfg).fit(synthetic.X, synthetic.y)
+        fast = compile_predictor(p.model)
+        assert isinstance(fast, FastLinear)
+        ad = p.adapt(synthetic.X_shift)
+        Z = ad.stats[0].transform(synthetic.X_shift[:, p.support], p.config.clip)
+        np.testing.assert_array_equal([fast(z) for z in Z], p.model.predict(Z))
+
+
+def test_fallback_model_used_only_when_adaptation_falls_back(synthetic: Synthetic) -> None:
+    cfg = PipelineConfig(fallback_model="logreg")
+    p = HARPipeline(cfg).fit(synthetic.X, synthetic.y)
+    assert p.fallback_ is not None
+    tiny = synthetic.X_shift[:5]
+    ad_tiny = p.adapt(tiny)
+    assert ad_tiny.fallback == [True]
+    # tiny set: fallback model on reference-standardized features, batch == single
+    z = ad_tiny.stats[0].transform(tiny[:, p.support], p.config.clip)
+    expected = p.fallback_.predict(z)
+    np.testing.assert_array_equal(p.predict(tiny, ad_tiny), expected)
+    np.testing.assert_array_equal([p.predict_one(x, ad_tiny) for x in tiny], expected)
+    # large set: main model, identical to a pipeline without a fallback model
+    plain = HARPipeline(PipelineConfig()).fit(synthetic.X, synthetic.y)
+    np.testing.assert_array_equal(p.predict(synthetic.X_shift), plain.predict(synthetic.X_shift))
+
+
+def test_fallback_survives_pickle(synthetic: Synthetic) -> None:
+    p = HARPipeline(PipelineConfig(fallback_model="logreg")).fit(synthetic.X, synthetic.y)
+    clone = pickle.loads(pickle.dumps(p))  # noqa: S301 - our own object
+    assert clone._fast_fallback is None
+    ad = clone.adapt(synthetic.X_shift[:3])
+    assert clone.predict_one(synthetic.X_shift[0], ad) == p.predict_one(
+        synthetic.X_shift[0], p.adapt(synthetic.X_shift[:3])
+    )

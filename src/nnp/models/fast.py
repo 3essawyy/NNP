@@ -21,7 +21,8 @@ from typing import Any
 
 import numpy as np
 import numpy.typing as npt
-from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC, LinearSVC
 
 FloatArray = npt.NDArray[np.float64]
 Predictor = Callable[[FloatArray], int]
@@ -65,6 +66,21 @@ class FastRBFSVC:
         return int(self.classes[int(np.argmax(votes))])
 
 
+class FastLinear:
+    """Exact single-row prediction for linear multi-class models (LR, linear SVM):
+    ``classes[argmax(W z + b)]``, the same rule as their ``predict``."""
+
+    def __init__(self, model: Any) -> None:
+        self.W: FloatArray = np.asarray(model.coef_, dtype=np.float64)
+        self.b: FloatArray = np.asarray(model.intercept_, dtype=np.float64)
+        self.classes = np.asarray(model.classes_)
+        if self.W.shape[0] != self.classes.size:
+            raise TypeError("FastLinear supports multi-class (one row per class) models only")
+
+    def __call__(self, z: FloatArray) -> int:
+        return int(self.classes[int(np.argmax(self.W @ z + self.b))])
+
+
 class GenericPredictor:
     """Fallback: the estimator's own ``predict`` on a 1-row matrix."""
 
@@ -76,7 +92,13 @@ class GenericPredictor:
 
 
 def compile_predictor(model: Any) -> Predictor:
-    """Return a fast single-row predictor for ``model`` (exact for RBF SVC)."""
+    """Return a fast single-row predictor for ``model`` (exact for RBF SVC and linear models)."""
     if isinstance(model, SVC) and model.kernel == "rbf":
         return FastRBFSVC(model)
+    if (
+        isinstance(model, LogisticRegression | LinearSVC)
+        and np.ndim(model.coef_) == 2
+        and np.shape(model.coef_)[0] == len(model.classes_)
+    ):
+        return FastLinear(model)
     return GenericPredictor(model)

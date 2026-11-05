@@ -16,8 +16,10 @@ These prove the system meets the brief. Definitions: [acceptance.md](acceptance.
 | REQ-M2 feature selection | TC-006 | T-006 |
 | REQ-M3 model selection / CV | TC-007 | T-007 |
 | REQ-M4 error analysis | TC-008 | T-008 |
-| REQ-G1 accuracy + runtime | TC-014 | T-007, T-009 |
-| REQ-G2 docs / explainability | TC-001 | T-001 |
+| REQ-G1 accuracy + runtime | TC-015 | Small test folders: fallback used only when adaptation falls back; full validation unchanged | Automated (`tests/test_pipeline.py::test_fallback_*`) + E7 | Pass (2026-11-05) |
+| TC-014 | T-007, T-009 |
+| REQ-G2 docs / explainability | TC-001 | T-001, T-020 |
+| REQ-I1 small / unknown-size test folders | TC-015 | T-015 |
 
 ## Index
 
@@ -36,4 +38,5 @@ These prove the system meets the brief. Definitions: [acceptance.md](acceptance.
 | TC-011 | HF Space serves predictions | Manual | Partial: app tested end-to-end locally via `gradio_client` (80 files → 2 devices); public deploy TODO(team) |
 | TC-012 | Report contains every brief section; numbers generated | Manual | Partial: compiles (6 pages, no undefined refs); team sections + course template TODO |
 | TC-013 | Submission zip contents | Manual | Pass (2026-11-04, `NNP_TEAM=TEST`: 179 files, 4.1 MB; unzipped `infer.py` in a plain-pip venv → 97.31 %); re-run with the real team number |
+| TC-015 | Small test folders: fallback used only when adaptation falls back; full validation unchanged | Automated (`tests/test_pipeline.py::test_fallback_*`) + E7 | Pass (2026-11-05) |
 | TC-014 | Shipped model ≥ 95 % on validation through `infer.py` | Automated (`tests/test_dataset.py`, dataset only) + `poe infer && poe score` | Pass (2026-11-04: 97.31 %) |

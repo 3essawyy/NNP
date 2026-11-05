@@ -9,3 +9,4 @@ How to set up, run, reproduce and submit NNP. Design internals live in [modules/
 | [SG-003](SG-003-reproduce-experiments.md) | Reproduce every report number + retrain the shipped model | Written |
 | [SG-004](SG-004-hf-space.md) | Deploy the Hugging Face Space (bonus) | Written, deploy pending |
 | [SG-005](SG-005-submission-checklist.md) | Submission checklist | Written |
+| [SG-006](SG-006-oral-exam-study-guide.md) | Oral discussion study guide: reading list, five core questions, phase deep-dives, traps | Written |

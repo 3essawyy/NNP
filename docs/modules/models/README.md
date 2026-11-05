@@ -26,6 +26,7 @@ Compose preprocessing → selection → reduction → classifier into one object
 - With `adapt=False` the pipeline is the classic baseline: one scaler fitted on all training data, applied to everything.
 - **Fast path** (`fast.py`): for RBF SVMs `FastRBFSVC` evaluates `exp(−γ‖sv − z‖²)` for all support vectors with one mat-vec, the 15 one-vs-one decisions with a precomputed weight matrix (libsvm coefficient layout), and a majority vote (ties → lowest class, like libsvm). ≈ 0.3 ms vs ≈ 1 ms for `SVC.predict` on one row. Verified exact at fit time on 500 training rows (falls back to `predict` on any mismatch) and in `tests/test_pipeline.py`; byte-identical `results.txt` on the 3090 validation files.
 - The fast predictor is dropped from the pickle (`__getstate__`) and rebuilt on first use.
+- **Fallback model (ADR-013):** with `fallback_model` set, `fit` also trains that model on *training-reference*-standardized features; `predict_one`/`predict` use it only for devices whose `Adaptation.fallback` flag is set (fewer than `min_stats_size` records). Linear models get the exact `FastLinear` path (`argmax(Wz + b)`).
 
 ## Model zoo (defaults)
 `gaussian_nb`, `lda` (Ledoit–Wolf shrinkage), `qda` (reg_param 0.5), `logreg` (C=1), `linear_svc` (C=0.05), `svc_rbf` (C=10, γ=scale; the shipped model uses C=100 — `final.py`), `knn` (k=10, distance), `random_forest`/`extra_trees` (300 trees), `lightgbm` (300, lr 0.05), `mlp` (256 hidden, α=0.01, early stopping), `ensemble` (hard vote RBF SVM + linear SVM + LR).
