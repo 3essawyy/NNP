@@ -16,6 +16,7 @@ Never delete or rewrite an accepted ADR. To change a decision, add a new ADR and
 | [ADR-010](ADR-010-hf-space.md) | Bonus: Hugging Face Space, deployed by a team member | Accepted | 2026-11-04 |
 | [ADR-011](ADR-011-git-flow.md) | Git flow in cloud sessions | Accepted | 2026-11-04 |
 | [ADR-012](ADR-012-report-in-latex.md) | Report in LaTeX, numbers generated | Accepted | 2026-11-04 |
+| [ADR-013](ADR-013-small-test-set-fallback.md) | Small test sets: lower split/stats minimums + logistic-regression fallback | Accepted | 2026-11-05 |
 
 ## Open decisions
 | Topic | Decide when |

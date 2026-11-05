@@ -20,11 +20,9 @@ Milestone: **M1 = submission** (report PDF, `code_<team>.zip`, model, Dockerfile
 | [T-012](T-012-report.md) | LaTeX report wired to generated results | report | T-008 | W+0 | Draft compiled — team info + template pending |
 | [T-013](T-013-submission-pack.md) | Submission zip, README, final checks, tag | deploy, docs | T-010, T-012 | before deadline | Todo (script + TC-013 verified; needs team number) |
 | [T-014](T-014-literature-verification.md) | Literature survey: verify every citation, extend related work | report | T-012 | before deadline | Todo (team) |
-
-### Proposed next (from the S002 handoff, not yet planned)
-| Item | Why | Ref |
-|---|---|---|
-| Python 3.10/3.11 compatibility of `requirements.txt` + model pickle | graders may run without Docker | S002 §7 R1 |
-| Trimmed per-device statistics against outlier records | EXP-005 weakness | S002 §7 R2 |
-| Small-test-set fallback (per-sample offset correction) | adaptation needs ≥ 60 files | S002 §7 R3 |
-| Sitting/Standing second stage | 72 of 83 errors | S002 §7 R5 |
+| [T-015](T-015-small-test-fallback.md) | Small test sets: LR fallback + lower split/stats minimums (E7) | models, preprocessing, experiments | T-009 | W+0 | Done |
+| [T-016](T-016-python-compatibility.md) | Python-version compatibility of the non-Docker path | deploy, inference | T-013 | next session | Todo |
+| [T-017](T-017-outlier-robust-device-stats.md) | Outlier-robust (trimmed) per-device statistics | preprocessing | T-005 | next session | Todo |
+| [T-018](T-018-sit-stand-second-stage.md) | Sitting/Standing second stage (optional) | models | T-016, T-017 | optional | Todo |
+| [T-019](T-019-timing-on-slow-machine.md) | Timing check on the slowest team machine | inference | — | before submission | Todo (team) |
+| [T-020](T-020-oral-exam-prep.md) | Oral discussion preparation (SG-006) | docs | — | before discussion | Todo (team) |

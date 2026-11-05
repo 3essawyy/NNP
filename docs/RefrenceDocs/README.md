@@ -4,6 +4,7 @@
 |---|---|---|
 | [Pattern_Recognition_Project_Fall_2026.pdf](Pattern_Recognition_Project_Fall_2026.pdf) | Official project brief (8 pages) | Authoritative source |
 | [REQ-requirements.md](REQ-requirements.md) | Brief extracted into traceable `REQ-*` IDs | Used by tasks and TCs |
+| [staff-questions.md](staff-questions.md) | Open questions for course staff (data, hidden test, timing, Python) + answers | Fill in answers |
 | [literature.md](literature.md) | Literature survey notes: HAR on inertial features, domain generalization/adaptation, robust scaling | Feeds report §Related work (T-014) |
 
 ## Dataset

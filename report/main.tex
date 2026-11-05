@@ -44,7 +44,9 @@ clustering activity-independent \emph{probe} features, and we remove noise-domin
 with a training-only ANOVA filter. The final system, an RBF SVM on \NSelected{} selected
 features with a numpy re-implementation of its one-vs-one decision, reaches
 \textbf{\FinalAcc\,\%} validation accuracy (macro-F1 \FinalMacroF\,\%) at
-\FinalMeanMs\,ms per sample on a CPU, all adaptation costs included.
+\FinalMeanMs\,ms per sample on a CPU, all adaptation costs included. The model is trained on
+Device\_B only; the labels of the released validation set were used for model selection, never for
+training.
 \end{abstract}
 
 \input{sections/introduction}

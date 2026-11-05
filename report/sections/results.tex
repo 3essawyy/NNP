@@ -95,6 +95,28 @@ recover more at a small validation cost.
   \label{fig:robust}
 \end{figure}
 
+\subsection{Small test folders}
+Adaptation needs a batch. \Cref{fig:smalln} evaluates random subsets of the validation set with
+$N=1\dots200$ files, drawn from both devices or from one. With the S002 settings (minimum 30
+records per discovered device), mixed folders of 30 files reached only
+\SmallNBeforeMixedThirty\,\%. They could not be split, so one set of statistics was computed
+over two phones. Folders under 30 files fell back to training statistics and the RBF SVM. The
+shipped settings split devices from 5 records per cluster and use a device's own statistics from
+10. Records that still fall back go to a logistic regression trained on training-standardized
+features, which tolerates residual offsets far better than the RBF kernel (87.7\,\% vs.\ 75.9\,\%
+per file). This raises mixed 30-file folders to \SmallNAfterMixedThirty\,\% and single-device
+20-file folders from \SmallNBeforeSingleTwenty\,\% to \SmallNAfterSingleTwenty\,\%; a single file
+scores \SmallNAfterOne\,\%. The full validation score is unchanged. The weakest remaining case is
+a folder of about ten files from two phones.
+
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{smalln_mixed.pdf}\end{subfigure}
+  \begin{subfigure}{0.49\linewidth}\includegraphics[width=\linewidth]{smalln_single.pdf}\end{subfigure}
+  \caption{Accuracy on random validation subsets of $N$ files (mixed or single device).}
+  \label{fig:smalln}
+\end{figure}
+
 \subsection{Final system and error analysis}
 Through the exact \texttt{infer.py} code path, the shipped model reaches \FinalAcc\,\% accuracy
 (macro-F1 \FinalMacroF\,\%) on the validation set: \FinalDevZero\,\% and \FinalDevOne\,\% on the

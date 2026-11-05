@@ -77,5 +77,5 @@ flowchart LR
 ## 7. Assumptions and limitations (also in the report)
 * Device shift ≈ per-feature affine (offset + gain) + noise; strong non-linear distortions are not undone.
 * Per-device statistics assume roughly similar class mixes per device (prior shift biases the means).
-* Adaptation needs a batch: a test device with < 30 samples (or < 5 % of the set) falls back to training reference statistics.
+* Adaptation needs a batch: a device group with < 10 records falls back to training statistics + a logistic-regression fallback (≈ 88 % per file; ADR-013, EXP-007). Mixed-device folders of ≈ 10 files are the weakest case.
 * Validation labels guided model selection (ADR-003) → the validation score is optimistic for truly new devices; simulated-shift CV is the unbiased-ish companion number.

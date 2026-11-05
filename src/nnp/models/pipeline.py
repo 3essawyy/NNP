@@ -49,6 +49,13 @@ class PipelineConfig:
     model: str = "svc_rbf"
     model_params: Mapping[str, Any] = field(default_factory=dict)
     cluster: ClusterConfig = field(default_factory=ClusterConfig)
+    min_stats_size: int = 30
+    """A discovered device needs at least this many records for its own statistics;
+    smaller groups use the training reference statistics (``Adaptation.fallback``)."""
+    fallback_model: str | None = None
+    """Classifier used for records whose device fell back to reference statistics
+    (no adaptation possible, e.g. tiny test sets). ``None`` = use the main model (ADR-013)."""
+    fallback_params: Mapping[str, Any] = field(default_factory=dict)
     seed: int = 0
 
     def describe(self) -> dict[str, Any]:
@@ -61,6 +68,9 @@ class PipelineConfig:
             "model": self.model,
             "model_params": dict(self.model_params),
             "cluster": vars(self.cluster),
+            "min_stats_size": self.min_stats_size,
+            "fallback_model": self.fallback_model,
+            "fallback_params": dict(self.fallback_params),
             "seed": self.seed,
         }
 
@@ -91,10 +101,13 @@ class HARPipeline:
         self.train_device_stats_: dict[str, DomainStats] = {}
         self.n_train_: int = 0
         self._fast: Predictor | None = None
+        self.fallback_: Any = None
+        self._fast_fallback: Predictor | None = None
 
     def __getstate__(self) -> dict[str, Any]:
         state = self.__dict__.copy()
         state["_fast"] = None  # rebuilt lazily after unpickling; keeps model.pkl small
+        state["_fast_fallback"] = None
         return state
 
     # ------------------------------------------------------------------ training
@@ -126,6 +139,15 @@ class HARPipeline:
         self._fast = self._compile(Zr[: min(500, Zr.shape[0])])
         if self.config.adapt:
             self.clusterer.fit(X, y)
+            if self.config.fallback_model is not None and self.reference_ is not None:
+                # trained on the *reference* standardization: exactly what it sees at test time
+                Zref = self.reducer.transform(
+                    self.selector.transform(self.reference_.transform(X, self.config.clip))
+                )
+                self.fallback_ = make_model(
+                    self.config.fallback_model, self.config.fallback_params, self.config.seed
+                ).fit(Zref, y)
+                self._fast_fallback = self._compile_for(self.fallback_, Zref[:500])
         self.n_train_ = int(X.shape[0])
         return self
 
@@ -157,7 +179,7 @@ class HARPipeline:
         fallback: list[bool] = []
         for c in range(assignment.k):
             members = X[assignment.labels == c][:, sup]
-            if members.shape[0] < self.config.cluster.min_size:
+            if members.shape[0] < self.config.min_stats_size:
                 stats.append(ref)
                 fallback.append(True)
             else:
@@ -166,14 +188,22 @@ class HARPipeline:
         return Adaptation(assignment, stats, fallback)
 
     def _compile(self, check: FloatArray | None = None) -> Predictor:
+        """Fast single-row predictor for the main model."""
+        return self._compile_for(self.model, check)
+
+    @staticmethod
+    def _compile_for(model: Any, check: FloatArray | None = None) -> Predictor:
         """Fast single-row predictor; verified against ``model.predict`` when ``check`` given."""
-        fast = compile_predictor(self.model)
+        fast = compile_predictor(model)
         # Only a re-implementation needs verifying; the generic fallback *is* model.predict.
         if check is not None and check.shape[0] > 0 and not isinstance(fast, GenericPredictor):
-            reference = self.model.predict(check)
+            reference = model.predict(check)
             if any(fast(row) != ref for row, ref in zip(check, reference, strict=True)):
-                fast = GenericPredictor(self.model)  # pragma: no cover - safety net
+                fast = GenericPredictor(model)  # pragma: no cover - safety net
         return fast
+
+    def _uses_fallback(self, adaptation: Adaptation, c: int) -> bool:
+        return self.fallback_ is not None and adaptation.fallback[c] and self.config.adapt
 
     def _features(self, Xsel: FloatArray, stats: DomainStats) -> FloatArray:
         return self.reducer.transform(stats.transform(Xsel, self.config.clip))
@@ -182,6 +212,10 @@ class HARPipeline:
         """Predict one raw ``(561,)`` sample; this is the per-sample step ``infer.py`` times."""
         c = adaptation.assignment.assign(x) if adaptation.n_devices > 1 else 0
         z = self._features(x[self.support][None, :], adaptation.stats[c])
+        if self._uses_fallback(adaptation, c):
+            if self._fast_fallback is None:
+                self._fast_fallback = self._compile_for(self.fallback_)
+            return self._fast_fallback(z[0])
         if self._fast is None:
             self._fast = self._compile()
         return self._fast(z[0])
@@ -195,5 +229,6 @@ class HARPipeline:
         for c in range(adaptation.n_devices):
             mask = labels == c
             if mask.any():
-                out[mask] = self.model.predict(self._features(Xsel[mask], adaptation.stats[c]))
+                model = self.fallback_ if self._uses_fallback(adaptation, c) else self.model
+                out[mask] = model.predict(self._features(Xsel[mask], adaptation.stats[c]))
         return out
