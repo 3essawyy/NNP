@@ -102,12 +102,12 @@ records per discovered device), mixed folders of 30 files reached only
 \SmallNBeforeMixedThirty\,\%. They could not be split, so one set of statistics was computed
 over two phones. Folders under 30 files fell back to training statistics and the RBF SVM. The
 shipped settings split devices from 5 records per cluster and use a device's own statistics from
-10. Records that still fall back go to a logistic regression trained on training-standardized
+12. Records that still fall back go to a logistic regression trained on training-standardized
 features, which tolerates residual offsets far better than the RBF kernel (87.7\,\% vs.\ 75.9\,\%
 per file). This raises mixed 30-file folders to \SmallNAfterMixedThirty\,\% and single-device
 20-file folders from \SmallNBeforeSingleTwenty\,\% to \SmallNAfterSingleTwenty\,\%; a single file
-scores \SmallNAfterOne\,\%. The full validation score is unchanged. The weakest remaining case is
-a folder of about ten files from two phones.
+scores \SmallNAfterOne\,\%. The full validation score is unchanged. Folders of 10--20 files remain
+the weakest case (86--88\,\%).
 
 \begin{figure}[t]
   \centering

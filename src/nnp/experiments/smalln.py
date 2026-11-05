@@ -33,7 +33,7 @@ def variants() -> list[tuple[str, PipelineConfig]]:
     return [
         ("no fallback, min 30 (S002)", before),
         ("+ LR fallback, min 30", r(before, fallback_model="logreg")),
-        ("shipped: LR fallback, min 5/10", f),
+        ("shipped: LR fallback, min 5/12", f),
     ]
 
 

@@ -4,7 +4,7 @@
     "sklearn_version": "1.9.1",
     "numpy_version": "2.5.4",
     "python": "3.12.13",
-    "created_utc": "2026-11-05T15:43:30Z",
+    "created_utc": "2026-11-05T15:51:11Z",
     "n_train": 3604,
     "n_selected_features": 315,
     "config": {
@@ -38,12 +38,12 @@
         "silhouette_sample": 2000,
         "seed": 0
       },
-      "min_stats_size": 10,
+      "min_stats_size": 12,
       "fallback_model": "logreg",
       "fallback_params": {},
       "seed": 0
     },
-    "train_seconds": 6.66
+    "train_seconds": 6.67
   },
   "accuracy": 0.9731391585760518,
   "macro_f1": 0.9741877118064427,
@@ -178,11 +178,11 @@
       2
     ]
   ],
-  "adapt_seconds": 0.3295256399999289,
-  "time_mean_ms": 0.4732071032359142,
-  "time_p95_ms": 0.6098081019626658,
-  "time_max_ms": 4.66857260196431,
-  "time_total_s": 1.4622099489989748,
-  "time_rounded_total_s": 0.8990000000000001,
+  "adapt_seconds": 0.3362716429999182,
+  "time_mean_ms": 0.48336811456439027,
+  "time_p95_ms": 0.6456285243907631,
+  "time_max_ms": 2.6746257743902833,
+  "time_total_s": 1.493607474003966,
+  "time_rounded_total_s": 0.9860000000000001,
   "n_devices": 2
 }

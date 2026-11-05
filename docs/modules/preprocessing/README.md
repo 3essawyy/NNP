@@ -39,7 +39,7 @@ On validation: k = 2, silhouette 0.994, split exactly at file 1546 (ARI = 1 vs t
 | `k_max` | 4 | max devices considered |
 | `min_silhouette` | 0.8 | acceptance threshold |
 | `min_fraction` / `min_size` | 0.05 / 30 (shipped: 5, ADR-013) | minimum cluster size = max(min_size, 5 % of N) |
-| `min_stats_size` (pipeline) | 30 (shipped: 10, ADR-013) | below this a device uses training stats + the fallback model |
+| `min_stats_size` (pipeline) | 30 (shipped: 12, ADR-013) | below this a device uses training stats + the fallback model |
 
 ## Validation and failure modes
 | Failure | Detection | Behavior |
@@ -47,7 +47,7 @@ On validation: k = 2, silhouette 0.994, split exactly at file 1546 (ARI = 1 vs t
 | Activities mistaken for devices | probe features are activity-independent | tested: single device → k = 1 |
 | Outlier group mistaken for device | size rule | tested |
 | Too few test samples (< 60) | `n < 2·min_size` | one device |
-| Device cluster < `min_stats_size` (10) | pipeline | training reference stats + fallback LR (`Adaptation.fallback`, ADR-013) |
+| Device cluster < `min_stats_size` (12) | pipeline | training reference stats + fallback LR (`Adaptation.fallback`, ADR-013) |
 | NaN / inf | `np.isfinite` | ignored in stats, mapped to 0 |
 
 ## Tests

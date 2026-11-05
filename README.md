@@ -81,7 +81,7 @@ Dockerfile             inference image
 ```
 
 ## Small test folders
-`infer.py` adapts per device when the folder is large enough. Groups under 10 records fall back to the training statistics and a logistic-regression fallback model (≈ 88 % per file; [ADR-013](docs/decisions/ADR-013-small-test-set-fallback.md)). The full validation score is unaffected.
+`infer.py` adapts per device when the folder is large enough. Groups under 12 records fall back to the training statistics and a logistic-regression fallback model (≈ 88 % per file; [ADR-013](docs/decisions/ADR-013-small-test-set-fallback.md)). The full validation score is unaffected.
 
 ## Data
 **Data usage statement:** the model is trained on `Device_B` only. Labels of the released `eval_data` were used for model selection and tuning, never for training ([ADR-003](docs/decisions/ADR-003-data-usage-policy.md)).
