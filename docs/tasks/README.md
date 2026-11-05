@@ -20,3 +20,11 @@ Milestone: **M1 = submission** (report PDF, `code_<team>.zip`, model, Dockerfile
 | [T-012](T-012-report.md) | LaTeX report wired to generated results | report | T-008 | W+0 | Draft compiled — team info + template pending |
 | [T-013](T-013-submission-pack.md) | Submission zip, README, final checks, tag | deploy, docs | T-010, T-012 | before deadline | Todo (script + TC-013 verified; needs team number) |
 | [T-014](T-014-literature-verification.md) | Literature survey: verify every citation, extend related work | report | T-012 | before deadline | Todo (team) |
+
+### Proposed next (from the S002 handoff, not yet planned)
+| Item | Why | Ref |
+|---|---|---|
+| Python 3.10/3.11 compatibility of `requirements.txt` + model pickle | graders may run without Docker | S002 §7 R1 |
+| Trimmed per-device statistics against outlier records | EXP-005 weakness | S002 §7 R2 |
+| Small-test-set fallback (per-sample offset correction) | adaptation needs ≥ 60 files | S002 §7 R3 |
+| Sitting/Standing second stage | 72 of 83 errors | S002 §7 R5 |

@@ -5,4 +5,4 @@ One log per working session: what was done, decided, left open, and what to do n
 | ID | Date | Title | Tasks |
 |---|---|---|---|
 | [S001](2026-11-04-S001-kickoff-design-interview.md) | 2026-11-04 | Kickoff: brief, data inspection, design interview | T-001 |
-| [S002](2026-11-04-S002-end-to-end-build.md) | 2026-11-04 | End-to-end build: pipeline, experiments, inference, Docker, report draft | T-002…T-013 |
+| [S002](2026-11-04-S002-end-to-end-build.md) | 2026-11-04/05 | End-to-end build + **handoff** (state, decisions, risks, next steps) | T-002…T-013 |
